@@ -1,0 +1,3 @@
+mainPage:
+    path: /
+    controller: App\Controller\MainPage::index

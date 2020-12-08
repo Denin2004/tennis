@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>{% block title %}Welcome!{% endblock %}</title>
+    {% block stylesheets %}
+        {{ encore_entry_link_tags('app') }}
+    {% endblock %}
+</head>
+<body>
+{% block body %}{% endblock %}
+{% block javascripts %}
+    <script type="text/javascript">
+        window.MFW_APP_PROPS = {
+            formats: {
+                date: "{{js_date_format}}",
+                time: "{{js_time_format}}",
+                datetime: "{{js_date_format}} {{js_time_format}}"
+            },
+            {% include 'urls.json.twig' %}
+        }
+    </script>
+    {{ encore_entry_script_tags('app') }}
+{% endblock %}
+</body>
+</html>
