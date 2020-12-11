@@ -8,12 +8,10 @@ use App\Services\DbProvider;
 
 class Common extends AbstractController
 {
-    protected $dbProvider;
     protected $translator;
-//test
-    public function __construct(DbProvider $dbProvider, TranslatorInterface $tr)
+
+    public function __construct(TranslatorInterface $tr)
     {
-        $this->dbProvider = $dbProvider;
         $this->translator = $tr;
     }
 

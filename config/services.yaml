@@ -56,8 +56,12 @@ services:
 
     app.common.controller:
         class: App\Controller\Common
-        arguments: ['@app.dbprovider', '@translator']
+        arguments: ['@translator']
         public: false
+        
+    App\Entity\Entity:
+        class: App\Entity\Entity
+        arguments: ['@app.dbprovider']
 
     # add more service definitions when explicit configuration is needed
     # please note that last definitions always *replace* previous ones

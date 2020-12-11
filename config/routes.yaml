@@ -1,3 +1,8 @@
 mainPage:
     path: /
     controller: App\Controller\MainPage::index
+    
+players: 
+    resource: routes/players.yaml
+    prefix: /players
+    

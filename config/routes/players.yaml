@@ -1,0 +1,4 @@
+playersList:
+    path: /list
+    controller: App\Controller\Players\Main::players
+    methods: GET
