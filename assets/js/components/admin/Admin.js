@@ -20,14 +20,15 @@ class Admin extends Component {
         return (
             <React.Fragment>
                 <Layout>
-                    <Header>
-                        <Menu mode="horizontal" defaultSelectedKeys={['1']}>
-                            <Menu.Item key="1">
-                                <Link to='/admin/main'>{this.props.t('common.mainPage')}</Link></Menu.Item>
-                            <Menu.Item key="2">
+                    <Header className="mfw-ant-layout-header">
+                        <Menu mode="horizontal" defaultSelectedKeys={[this.props.location.pathname]}>
+                            <Menu.Item key="/admin/main">
+                                <Link to='/admin/main'>{this.props.t('common.mainPage')}</Link>
+                            </Menu.Item>
+                            <Menu.Item key="/admin/competitions">
                                 <Link to='/admin/competitions'>{this.props.t('competition.s')}</Link>
                             </Menu.Item>
-                            <Menu.Item key="3">
+                            <Menu.Item key="/admin/players">
                                 <Link to='/admin/players'>{this.props.t('player.s')}</Link>
                             </Menu.Item>
                         </Menu>
@@ -47,4 +48,4 @@ class Admin extends Component {
     }
 }
 
-export default withTranslation()(Admin);
+export default withRouter(withTranslation()(Admin));

@@ -2,3 +2,15 @@ playersList:
     path: /list
     controller: App\Controller\Players\Main::players
     methods: GET
+    
+playerForm:
+    path: /form/{id}
+    controller: App\Controller\Players\Main::form
+    methods: GET
+    defaults:
+        id: -1
+
+playerPost:
+    path: /form
+    controller: App\Controller\Players\Main::post
+    methods: POST

@@ -62,6 +62,9 @@ services:
     App\Entity\Entity:
         class: App\Entity\Entity
         arguments: ['@app.dbprovider']
+        
+    App\Services\FormTransformer:
+        class: App\Services\FormTransformer
 
     # add more service definitions when explicit configuration is needed
     # please note that last definitions always *replace* previous ones
