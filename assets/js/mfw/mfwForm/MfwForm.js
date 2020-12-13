@@ -5,37 +5,38 @@ import { Form } from 'antd';
 import axios from 'axios';
 import { withTranslation } from 'react-i18next';
 
-import MfwFormWidget from '@app/mfw/MfwFormWidget';
-import MfwSnackbar from '@app/mfw/MfwSnackbar';
+import MfwFormWidget from '@app/mfw/mfwForm/MfwFormWidget';
 
 class MfwForm extends Component {
     constructor(props){
         super(props);
         this.state = { 
-            error: ''
+            layout: props.layout ? props.layout : {
+                labelCol: { span: 8 },
+                wrapperCol: { span: 16 }
+            }
         }
         this.closeError = this.closeError.bind(this);
-        this.handleSubmit = this.handleSubmit.bind(this);
+        this.finish = this.finish.bind(this);
     }    
     
     closeError() {
         this.setState({error: ''});
     }
 
-    handleSubmit(event) {
-        event.preventDefault();
+    finish(values) {
         axios({
-            method: 'post',
+            method: this.props.method,
             url: this.props.form.action,
-            data: new FormData(event.target),
+            data: values,
         }).then(res => {
             if (res.data.success) {
-                this.props.successSubmit(res.data);
+                this.props.success(res.data);
             } else {
-                this.setState({error: res.data.error})
+                message.error(this.props.t(res.data.error));
             }
         }).catch(error => {
-            this.setState({error: error.toString(), loading: false});
+            message.error(error.toString());
         });
     }    
     
@@ -55,7 +56,7 @@ class MfwForm extends Component {
             this.findWidget(child, parsed);
         });
         return (
-            <form action={this.props.form.action} method={this.props.form.method} name={this.props.form.name} onSubmit={this.handleSubmit}>
+            <Form {...this.state.layout} name={this.props.form.name} onFinish={this.finish}>
                 {this.props.children} 
                 {Object.keys(this.props.form.elements).map(key => {
                     if (parsed.indexOf(this.props.form.elements[key].id) === -1) { 
@@ -64,7 +65,7 @@ class MfwForm extends Component {
                         )
                     }
                 })}   
-            </form>
+            </Form>
         )
     }
 }

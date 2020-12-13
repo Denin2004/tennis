@@ -9,6 +9,7 @@ import { PlusOutlined } from '@ant-design/icons';
 
 import MfwForm from '@app/mfw/mfwForm/MfwForm';
 import MfwFormWidget from '@app/mfw/mfwForm/MfwFormWidget';
+import useWithForm from '@app/mfw/mfwForm/MfwFormHOC';
 
 class Players extends Component {
     constructor(props){
@@ -65,8 +66,12 @@ class Players extends Component {
     showPlayerForm(id) {
         axios.get(window.MFW_APP_PROPS.urls.player.form+'/'+id).then(res => {
             if (res.data.success) {
-                res.data.form.elements.name = this.props.t('player.name');
-                res.data.form.elements.phone = this.props.t('player.phone');
+                res.data.form.elements.name.label = this.props.t('player.name');
+                res.data.form.elements.phone.label = this.props.t('player.phone');
+                res.data.form.elements.button = {
+                    type: 'button',
+                    title: this.props.t('common.submit')
+                };
                 res.data.form.action = window.MFW_APP_PROPS.urls.player.post;
                 this.setState({
                     form: res.data.form,
@@ -84,6 +89,7 @@ class Players extends Component {
     }
     
     render() {
+        console.log(this);
         return (
             <React.Fragment>    
                 <div>
@@ -96,21 +102,23 @@ class Players extends Component {
                     pagination={this.state.pagination}
                     loading={this.state.loading}
                 />
-                <Modal
-                  title="Basic Modal"
-                  visible={this.state.modal}
-                  onOk={() => this.setState({modal: false})}
-                  onCancel={() => this.setState({modal: false})}>
-                    <MfwForm form={this.state.form} successSubmit={() => {this.setState({changePsw: false})}}>
-                        <MfwFormWidget element={this.state.form.elements.name}/>
-                        <MfwFormWidget element={this.state.form.elements.phone}/>
-                                  <Button onClick={() => {this.setState({changePsw: false})}} color="primary">{this.props.t('dialog.abort')}</Button>
-                                  <Button type="submit" color="primary">{this.props.t('dialog.save')}</Button>
+                {this.state.modal == true ?
+                    <Modal
+                      title="Basic Modal"
+                      visible={this.state.modal}
+                      onOk={() => this.setState({modal: false})}
+                      onCancel={() => this.setState({modal: false})}>
+
+                        <MfwForm form={this.state.form} success={() => this.getPlayers()}>
+                            <MfwFormWidget element={this.state.form.elements.name}/>
+                            <MfwFormWidget element={this.state.form.elements.phone}/>
+                            <MfwFormWidget element={this.state.form.elements.button}/>
                         </MfwForm>                          
-                </Modal>
+                    </Modal> : ''
+                }
             </React.Fragment>
         )
     }
 }
 
-export default withTranslation()(Players);
+export default useWithForm(withTranslation()(Players));

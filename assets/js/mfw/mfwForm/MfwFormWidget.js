@@ -1,13 +1,13 @@
 import React, {Component} from 'react';
 
+import { Form, Input, Button } from 'antd';
+
 class MfwFormWidget extends Component {
     constructor(props){
         super(props);
         this.textElement = this.textElement.bind(this);
-        this.choiceElement = this.choiceElement.bind(this);
         this.hiddenElement = this.hiddenElement.bind(this);
-        this.fileElement = this.fileElement.bind(this);
-        this.checkboxElement = this.checkboxElement.bind(this);
+        this.buttonElement = this.buttonElement.bind(this);
     }    
     
     textElement(element) {
@@ -19,37 +19,26 @@ class MfwFormWidget extends Component {
         }
         props.fullWidth = props.fullWidth != undefined ? props.fullWidth : true;
         return (
-            <TextField
-               {...props}
-               label={element.label}
-               id={element.id} 
-               defaultValue={element.value} 
-               onKeyPress={(ev) => {if (ev.key === 'Enter') {ev.preventDefault();}}}/>
+            <Form.Item
+                label={element.label}
+                name={element.full_name}
+                {...props}>                
+                <Input/>
+            </Form.Item>
         );
     };
     
-    passwordElement(element) {
-        var props = this.props.widgetProps ? this.props.widgetProps : {};
-        if (props.InputProps == undefined) {
-            props.InputProps = {name: element.full_name};
-        } else {
-            props.InputProps.name = element.full_name;
-        }
-        props.fullWidth = props.fullWidth != undefined ? props.fullWidth : true;
-        return (
-            <TextField
-               {...props}
-               label={element.label}
-               type="password"
-               id={element.id} 
-               defaultValue={element.value} 
-               onKeyPress={(ev) => {if (ev.key === 'Enter') {ev.preventDefault();}}}/>
-        );
-    };    
-    
     hiddenElement(element) {
         return (
-            <input type="hidden" id={element.id} value={element.value} name={element.full_name} />
+            <Input type="hidden" id={element.id} value={element.value} name={element.full_name} />
+        );
+    };
+    
+    buttonElement(element) {
+        return (
+            <Form.Item>                
+                <Button htmlType="submit" type={element.type ? element.type : 'primary'}>{element.title}</Button>
+            </Form.Item>
         );
     };
     
