@@ -48,19 +48,14 @@ class Main extends Common
                 'error' => 'common.errors.formData'
             ]);
         }
-        $request->request->add($formData);
         $form = $this->createForm(Player::class);
-//        $form->handleRequest($request);
-/*        if (!$form->isSubmitted()) {
-            $form->submit($request->request->get($form->getName()));
-        }*/
-$form->submit($formData);
-dump($request, $form->getData(), $request->getContent());
+        $form->submit($formData);
         if (!$form->isValid()) {
             return new JsonResponse([
                 'error' => $this->formErrors($form)
             ]);
         }
+
         $playersDB->post($form->getData());
         return new JsonResponse([
             'success' => true

@@ -102,7 +102,7 @@ class Players extends Component {
                     headers: {'X-Requested-With': 'XMLHttpRequest'}
                 }).then(res => {
                     if (res.data.success) {
-                        this.props.success(res.data);
+                        this.getPlayers();
                     } else {
                         message.error(this.props.t(res.data.error));
                     }

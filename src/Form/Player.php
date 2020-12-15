@@ -9,6 +9,7 @@ use Symfony\Component\Validator\Constraints\NotBlank;
 
 class Player extends AbstractType
 {
+
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder->add(
