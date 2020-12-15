@@ -12,12 +12,6 @@ class MfwFormWidget extends Component {
     
     textElement(element) {
         var props = this.props.widgetProps ? this.props.widgetProps : {};
-        if (props.InputProps == undefined) {
-            props.InputProps = {name: element.full_name};
-        } else {
-            props.InputProps.name = element.full_name;
-        }
-        props.fullWidth = props.fullWidth != undefined ? props.fullWidth : true;
         return (
             <Form.Item
                 label={element.label}
@@ -30,7 +24,11 @@ class MfwFormWidget extends Component {
     
     hiddenElement(element) {
         return (
-            <Input type="hidden" id={element.id} value={element.value} name={element.full_name} />
+            <Form.Item
+              name={element.full_name}
+              hidden={true} initialValue={element.value}>
+                <input type="hidden"/>
+            </Form.Item>
         );
     };
     

@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
 
-import { Form } from 'antd';
+import { Form, message } from 'antd';
 
 import axios from 'axios';
 import { withTranslation } from 'react-i18next';
@@ -10,12 +10,6 @@ import MfwFormWidget from '@app/mfw/mfwForm/MfwFormWidget';
 class MfwForm extends Component {
     constructor(props){
         super(props);
-        this.state = { 
-            layout: props.layout ? props.layout : {
-                labelCol: { span: 8 },
-                wrapperCol: { span: 16 }
-            }
-        }
         this.closeError = this.closeError.bind(this);
         this.finish = this.finish.bind(this);
     }    
@@ -26,8 +20,8 @@ class MfwForm extends Component {
 
     finish(values) {
         axios({
-            method: this.props.method,
-            url: this.props.form.action,
+            method: this.props.mfwForm.method,
+            url: this.props.mfwForm.action,
             data: values,
         }).then(res => {
             if (res.data.success) {
@@ -56,12 +50,12 @@ class MfwForm extends Component {
             this.findWidget(child, parsed);
         });
         return (
-            <Form {...this.state.layout} name={this.props.form.name} onFinish={this.finish}>
+            <Form {...this.props.formProps} onFinish={this.finish}>
                 {this.props.children} 
-                {Object.keys(this.props.form.elements).map(key => {
-                    if (parsed.indexOf(this.props.form.elements[key].id) === -1) { 
+                {Object.keys(this.props.mfwForm.elements).map(key => {
+                    if (parsed.indexOf(this.props.mfwForm.elements[key].id) === -1) { 
                         return (
-                            <MfwFormWidget key={key} element={this.props.form.elements[key]}/>
+                            <MfwFormWidget key={key} element={this.props.mfwForm.elements[key]}/>
                         )
                     }
                 })}   

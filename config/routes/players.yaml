@@ -11,6 +11,6 @@ playerForm:
         id: -1
 
 playerPost:
-    path: /form
+    path: /post
     controller: App\Controller\Players\Main::post
     methods: POST

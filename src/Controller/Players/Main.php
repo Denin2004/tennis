@@ -2,6 +2,7 @@
 namespace App\Controller\Players;
 
 use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\HttpFoundation\Request;
 
 use App\Controller\Common;
 use App\Services\FormTransformer;
@@ -36,6 +37,33 @@ class Main extends Common
         return new JsonResponse([
             'success' => true,
             'form' => $transformer->transform($form->createView())
+        ]);
+    }
+
+    public function post(Request $request, PlayersEntity $playersDB)
+    {
+        $formData = json_decode($request->getContent(), true);
+        if ($formData == null) {
+            return new JsonResponse([
+                'error' => 'common.errors.formData'
+            ]);
+        }
+        $request->request->add($formData);
+        $form = $this->createForm(Player::class);
+//        $form->handleRequest($request);
+/*        if (!$form->isSubmitted()) {
+            $form->submit($request->request->get($form->getName()));
+        }*/
+$form->submit($formData);
+dump($request, $form->getData(), $request->getContent());
+        if (!$form->isValid()) {
+            return new JsonResponse([
+                'error' => $this->formErrors($form)
+            ]);
+        }
+        $playersDB->post($form->getData());
+        return new JsonResponse([
+            'success' => true
         ]);
     }
 }

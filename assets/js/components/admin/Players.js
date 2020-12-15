@@ -4,7 +4,7 @@ import axios from 'axios';
 import i18n from '@app/i18app';
 import { withTranslation } from 'react-i18next';
 
-import { Table, message, Button, Modal } from 'antd';
+import { Table, message, Button, Modal, Form, Input } from 'antd';
 import { PlusOutlined } from '@ant-design/icons';
 
 import MfwForm from '@app/mfw/mfwForm/MfwForm';
@@ -14,7 +14,10 @@ import useWithForm from '@app/mfw/mfwForm/MfwFormHOC';
 class Players extends Component {
     constructor(props){
         super(props);
-        this.showPlayerForm = this.showPlayerForm.bind(this);
+        this.addPlayerForm = this.addPlayerForm.bind(this);
+        this.postPlayer = this.postPlayer.bind(this);
+        this.closeModal = this.closeModal.bind(this);
+        this.getPlayers = this.getPlayers.bind(this);
         this.state = {
             loading: true,
             columns: [
@@ -36,11 +39,11 @@ class Players extends Component {
             modal: false
         }
     }
-    
+
     componentDidMount() {
         this.getPlayers();
     }
-    
+
     getPlayers() {
         axios.get(window.MFW_APP_PROPS.urls.player.list).then(res => {
             if (res.data.success) {
@@ -61,17 +64,17 @@ class Players extends Component {
             message.error(error.toString());
             this.setState({loading: false});
         });
-    }    
-    
+    }
+
+    addPlayerForm() {
+        this.showPlayerForm(-1);
+    }
+
     showPlayerForm(id) {
         axios.get(window.MFW_APP_PROPS.urls.player.form+'/'+id).then(res => {
             if (res.data.success) {
-                res.data.form.elements.name.label = this.props.t('player.name');
+                res.data.form.elements.name.label = this.props.t('player.fio');
                 res.data.form.elements.phone.label = this.props.t('player.phone');
-                res.data.form.elements.button = {
-                    type: 'button',
-                    title: this.props.t('common.submit')
-                };
                 res.data.form.action = window.MFW_APP_PROPS.urls.player.post;
                 this.setState({
                     form: res.data.form,
@@ -87,13 +90,46 @@ class Players extends Component {
             this.setState({modal: false});
         });
     }
-    
+
+    postPlayer() {
+        this.props.form
+            .validateFields()
+            .then(values => {
+                axios({
+                    method: this.state.form.method,
+                    url: window.MFW_APP_PROPS.urls.player.post,
+                    data: values,
+                    headers: {'X-Requested-With': 'XMLHttpRequest'}
+                }).then(res => {
+                    if (res.data.success) {
+                        this.props.success(res.data);
+                    } else {
+                        message.error(this.props.t(res.data.error));
+                    }
+                }).catch(error => {
+                    message.error(error.toString());
+                });
+                this.setState({modal: false});
+            })
+            .catch(info => {
+                message.error(this.props.t('common.errors.validate'));
+            });
+        this.setState({modal: false});
+    }
+
+    closeModal() {
+        this.setState({modal: false});
+    }
+
     render() {
-        console.log(this);
         return (
-            <React.Fragment>    
+            <React.Fragment>
                 <div>
-                    <Button onClick={() => this.showPlayerForm(-1)} type="primary" style={{ marginBottom: 16 }} icon={<PlusOutlined/>}></Button>
+                    <Button
+                      onClick={this.addPlayerForm}
+                      type="primary"
+                      style={{ marginBottom: 16 }}
+                      icon={<PlusOutlined/>}></Button>
                 </div>
                 <Table
                     columns={this.state.columns}
@@ -106,14 +142,20 @@ class Players extends Component {
                     <Modal
                       title="Basic Modal"
                       visible={this.state.modal}
-                      onOk={() => this.setState({modal: false})}
-                      onCancel={() => this.setState({modal: false})}>
-
-                        <MfwForm form={this.state.form} success={() => this.getPlayers()}>
+                      onOk={this.postPlayer}
+                      onCancel={this.closeModal}>
+                        <MfwForm
+                           formProps={{
+                               form: this.props.form,
+                               name: this.state.form.name,
+                               labelCol: { span: 8 },
+                               wrapperCol: { span: 16 }
+                           }}
+                           mfwForm={this.state.form}
+                           success={this.getPlayers}>
                             <MfwFormWidget element={this.state.form.elements.name}/>
                             <MfwFormWidget element={this.state.form.elements.phone}/>
-                            <MfwFormWidget element={this.state.form.elements.button}/>
-                        </MfwForm>                          
+                        </MfwForm>
                     </Modal> : ''
                 }
             </React.Fragment>
