@@ -1,3 +1,9 @@
 .mfw-ant-layout-header {
     background-color: #fff;
 }
+
+.mfw-table-button-link {
+    padding: 0;
+    border: none;
+    height: auto;
+}

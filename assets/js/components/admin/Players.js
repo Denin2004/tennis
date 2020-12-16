@@ -4,7 +4,7 @@ import axios from 'axios';
 import i18n from '@app/i18app';
 import { withTranslation } from 'react-i18next';
 
-import { Table, message, Button, Modal, Form, Input } from 'antd';
+import { Table, message, Button, Modal, Form, Input, Space } from 'antd';
 import { PlusOutlined } from '@ant-design/icons';
 
 import MfwForm from '@app/mfw/mfwForm/MfwForm';
@@ -29,7 +29,17 @@ class Players extends Component {
                 {
                     title: this.props.t('player.phone'),
                     dataIndex: 'phone'
-                }
+                },
+                {
+                    title: 'Action',
+                    key: 'action',
+                    render: (text, record) => (
+                        <Space size="middle">
+                            <Button type="link" className="mfw-table-button-link">{this.props.t('actions.edit')}</Button>
+                            <Button type="link">{this.props.t('actions.delete')}</Button>
+                        </Space>
+                    )
+                  },
             ],
             data: [],
             pagination: {
@@ -39,7 +49,6 @@ class Players extends Component {
             modal: false
         }
     }
-
     componentDidMount() {
         this.getPlayers();
     }
@@ -99,7 +108,7 @@ class Players extends Component {
                     method: this.state.form.method,
                     url: window.MFW_APP_PROPS.urls.player.post,
                     data: values,
-                    headers: {'X-Requested-With': 'XMLHttpRequest'}
+                    headers: {'Content-Type': 'application/json'}
                 }).then(res => {
                     if (res.data.success) {
                         this.getPlayers();
