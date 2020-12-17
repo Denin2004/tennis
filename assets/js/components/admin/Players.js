@@ -18,28 +18,27 @@ class Players extends Component {
         this.postPlayer = this.postPlayer.bind(this);
         this.closeModal = this.closeModal.bind(this);
         this.getPlayers = this.getPlayers.bind(this);
+        this.showPlayerForm = this.showPlayerForm.bind(this);
         this.state = {
             loading: true,
             columns: [
                 {
                     title: this.props.t('player.fio'),
                     dataIndex: 'name',
-                    sorter: true
+                    sorter: true,
+                    render: (text, row) => {
+                        return <Button 
+                          type="link" 
+                          player_id={row.id} 
+                          onClick={() => this.showPlayerForm(row.id)}
+                          className="mfw-table-button-link">{text}
+                        </Button>
+                    }
                 },
                 {
                     title: this.props.t('player.phone'),
                     dataIndex: 'phone'
-                },
-                {
-                    title: 'Action',
-                    key: 'action',
-                    render: (text, record) => (
-                        <Space size="middle">
-                            <Button type="link" className="mfw-table-button-link">{this.props.t('actions.edit')}</Button>
-                            <Button type="link">{this.props.t('actions.delete')}</Button>
-                        </Space>
-                    )
-                  },
+                }
             ],
             data: [],
             pagination: {
@@ -78,7 +77,7 @@ class Players extends Component {
     addPlayerForm() {
         this.showPlayerForm(-1);
     }
-
+    
     showPlayerForm(id) {
         axios.get(window.MFW_APP_PROPS.urls.player.form+'/'+id).then(res => {
             if (res.data.success) {

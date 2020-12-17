@@ -22,4 +22,14 @@ class Players extends Entity
             $this->provider->db()->executeQuery('update players.players set name=:name, phone=:phone where id=:id', $params);
         }
     }
+
+    public function player($params)
+    {
+        $res = $this->provider->db()->fetchAll(
+            'select players.id, players.name, players.phone
+            from players.players players where players.id=:id',
+            $params
+        );
+        return isset($res[0]) ? $res[0] : false;
+    }
 }

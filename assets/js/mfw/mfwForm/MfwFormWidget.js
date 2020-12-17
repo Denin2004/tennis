@@ -11,7 +11,7 @@ class MfwFormWidget extends Component {
     }    
     
     textElement(element) {
-        var props = this.props.widgetProps ? this.props.widgetProps : {};
+        var props = element.widgetProps ? element.widgetProps : {};
         return (
             <Form.Item
                 label={element.label}
@@ -23,6 +23,7 @@ class MfwFormWidget extends Component {
     };
     
     hiddenElement(element) {
+        var props = element.widgetProps ? element.widgetProps : {};
         return (
             <Form.Item
               name={element.full_name}

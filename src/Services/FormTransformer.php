@@ -29,10 +29,13 @@ class FormTransformer
         }
         $cache_key = explode('_', $element->vars['cache_key']);
         $res = [
-            'value' => $element->vars['value'],
+            'widgetProps' => [
+                'id' => $element->vars['id'],
+                'initialValue' => $element->vars['value'],
+                'name' => $element->vars['name']
+            ],
             'id' => $element->vars['id'],
             'attr' => $element->vars['attr'],
-            'full_name' => $element->vars['name'],
             'type' => array_pop($cache_key)
         ];
         if (isset($element->vars['choices'])) {

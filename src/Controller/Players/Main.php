@@ -26,7 +26,7 @@ class Main extends Common
             'id' => $id,
         ];
         if ($id != -1) {
-            $player = $playersDB->player(id);
+            $player = $playersDB->player($player);
             if (!$player) {
                 return new JsonResponse([
                     'error' => 'player.errors.not_found'
