@@ -11,9 +11,7 @@ class Main extends Component {
 
     render() {
         return (
-            <React.Fragment>
-            Main
-            </React.Fragment>
+            <React.Fragment>Main</React.Fragment>
         )
     }
 }
