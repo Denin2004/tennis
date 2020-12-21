@@ -10,6 +10,7 @@ class Players extends Entity
         return $this->provider->db()->fetchAll(
             'select players.id, players.name, players.phone
             from players.players players
+            where players.del = false
             order by players.name'
         );
     }
@@ -31,5 +32,11 @@ class Players extends Entity
             $params
         );
         return isset($res[0]) ? $res[0] : false;
+    }
+
+    public function delete($params)
+    {
+        dump($params);
+        $this->provider->db()->executeQuery('update players.players set id=-1, del=true where id=:id', $params);
     }
 }

@@ -61,4 +61,15 @@ class Main extends Common
             'success' => true
         ]);
     }
+
+    public function delete(PlayersEntity $playersDB, $id)
+    {
+        $player = [
+            'id' => $id,
+        ];
+        $playersDB->delete($player);
+        return new JsonResponse([
+            'success' => true
+        ]);
+    }
 }

@@ -35,7 +35,6 @@ class FormTransformer
                 'name' => $element->vars['name']
             ],
             'id' => $element->vars['id'],
-            'attr' => $element->vars['attr'],
             'type' => array_pop($cache_key)
         ];
         if (isset($element->vars['choices'])) {

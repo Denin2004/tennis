@@ -4,8 +4,8 @@ import axios from 'axios';
 import i18n from '@app/i18app';
 import { withTranslation } from 'react-i18next';
 
-import { Table, message, Button, Modal, Form, Input, Space } from 'antd';
-import { PlusOutlined } from '@ant-design/icons';
+import { Table, message, Button, Modal, Form, Input, Space, Tooltip, Typography, Popconfirm } from 'antd';
+import { PlusOutlined, DeleteOutlined } from '@ant-design/icons';
 
 import MfwForm from '@app/mfw/mfwForm/MfwForm';
 import MfwFormWidget from '@app/mfw/mfwForm/MfwFormWidget';
@@ -19,6 +19,8 @@ class Players extends Component {
         this.closeModal = this.closeModal.bind(this);
         this.getPlayers = this.getPlayers.bind(this);
         this.showPlayerForm = this.showPlayerForm.bind(this);
+        this.deletePlayer = this.deletePlayer.bind(this);
+        
         this.state = {
             loading: true,
             columns: [
@@ -27,12 +29,27 @@ class Players extends Component {
                     dataIndex: 'name',
                     sorter: true,
                     render: (text, row) => {
-                        return <Button 
-                          type="link" 
-                          player_id={row.id} 
-                          onClick={() => this.showPlayerForm(row.id)}
-                          className="mfw-table-button-link">{text}
-                        </Button>
+                        return <React.Fragment>
+                            <Button 
+                              type="link" 
+                              onClick={() => this.showPlayerForm(row.id)}
+                              className="mfw-table-button-link">{text}
+                            </Button>
+                            <Tooltip title={this.props.t('actions.delete')} placement="bottom">
+                                <Popconfirm
+                                  title={this.props.t('player.delete_confirm')}
+                                  onConfirm={() => this.deletePlayer(row.id)}
+                                  okText={this.props.t('confirm.yes')}
+                                  cancelText={this.props.t('confirm.no')}>
+                                    <Button type="link" 
+                                      className="mfw-table-button-link mfw-float-right">
+                                        <Typography.Text type="secondary">
+                                            <DeleteOutlined className="mfw-test"/>
+                                        </Typography.Text>
+                                    </Button>
+                                </Popconfirm>
+                            </Tooltip>
+                        </React.Fragment>    
                     }
                 },
                 {
@@ -48,6 +65,7 @@ class Players extends Component {
             modal: false
         }
     }
+    
     componentDidMount() {
         this.getPlayers();
     }
@@ -84,10 +102,12 @@ class Players extends Component {
                 res.data.form.elements.name.label = this.props.t('player.fio');
                 res.data.form.elements.phone.label = this.props.t('player.phone');
                 res.data.form.action = window.MFW_APP_PROPS.urls.player.post;
+                this.props.form.resetFields();
                 this.setState({
                     form: res.data.form,
                     modal: true,
-                    loading: false
+                    loading: false,
+                    editPlayer: id
                 });
             } else {
                 message.error(this.props.t(res.data.error));
@@ -124,6 +144,19 @@ class Players extends Component {
             });
         this.setState({modal: false});
     }
+    
+    deletePlayer(id) {
+        axios.get(window.MFW_APP_PROPS.urls.player.delete+'/'+id).then(res => {
+            if (res.data.success) {
+                this.getPlayers();
+            } else {
+                message.error(this.props.t(res.data.error));
+            }
+        }).catch(error => {
+            console.log(error);
+            message.error(error.toString());
+        });
+    }
 
     closeModal() {
         this.setState({modal: false});
@@ -136,8 +169,9 @@ class Players extends Component {
                     <Button
                       onClick={this.addPlayerForm}
                       type="primary"
-                      style={{ marginBottom: 16 }}
-                      icon={<PlusOutlined/>}></Button>
+                      style={{ marginBottom: 16 }}>
+                        <PlusOutlined/>
+                    </Button>
                 </div>
                 <Table
                     columns={this.state.columns}
@@ -148,7 +182,7 @@ class Players extends Component {
                 />
                 {this.state.modal == true ?
                     <Modal
-                      title="Basic Modal"
+                      title={this.props.t(this.state.editPlayer == -1 ? 'player.new' : 'player.edit') }
                       visible={this.state.modal}
                       onOk={this.postPlayer}
                       onCancel={this.closeModal}>

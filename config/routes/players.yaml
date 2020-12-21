@@ -7,6 +7,8 @@ playerForm:
     path: /form/{id}
     controller: App\Controller\Players\Main::form
     methods: GET
+    requirements:
+        id: \d+|-1    
     defaults:
         id: -1
 
@@ -14,3 +16,12 @@ playerPost:
     path: /post
     controller: App\Controller\Players\Main::post
     methods: POST
+    
+playerDelete:
+    path: /delete/{id}
+    controller: App\Controller\Players\Main::delete
+    methods: GET
+    requirements:
+        id: \d+|-1    
+    defaults:
+        id: -1
