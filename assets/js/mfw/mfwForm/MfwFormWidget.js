@@ -8,39 +8,40 @@ class MfwFormWidget extends Component {
         this.textElement = this.textElement.bind(this);
         this.hiddenElement = this.hiddenElement.bind(this);
         this.buttonElement = this.buttonElement.bind(this);
-    }    
-    
-    textElement(element) {
-        var props = element.widgetProps ? element.widgetProps : {};
+        this.state = {
+            widgetProps : this.props.widgetProps ? 
+            (this.props.element.widgetProps ? {...this.props.element.widgetProps, ...this.props.widgetProps} : this.props.widgetProps) : 
+            (this.props.element.widgetProps ? this.props.element.widgetProps : {})
+        }
+    }
+
+    textElement() {
         return (
-            <Form.Item {...props}>                
+            <Form.Item {...this.state.widgetProps}>
                 <Input/>
             </Form.Item>
         );
     };
-    
-    hiddenElement(element) {
-        var props = element.widgetProps ? element.widgetProps : {};
+
+    hiddenElement() {
         return (
-            <Form.Item
-              hidden={true} 
-              {...props}>
+            <Form.Item hidden={true} {...this.state.widgetProps}>
                 <input type="hidden"/>
             </Form.Item>
         );
     };
-    
-    buttonElement(element) {
+
+    buttonElement() {
         return (
-            <Form.Item>                
-                <Button htmlType="submit" type={element.type ? element.type : 'primary'}>{element.title}</Button>
+            <Form.Item>
+                <Button htmlType="submit" type={this.props.element.type ? this.props.element.type : 'primary'}>{this.props.element.title}</Button>
             </Form.Item>
         );
     };
-    
+
     render() {
         return (
-            this[this.props.element.type+'Element'](this.props.element)
+            this[this.props.element.type+'Element']()
         )
     }
 }

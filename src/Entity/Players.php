@@ -36,7 +36,6 @@ class Players extends Entity
 
     public function delete($params)
     {
-        dump($params);
         $this->provider->db()->executeQuery('update players.players set id=-1, del=true where id=:id', $params);
     }
 }

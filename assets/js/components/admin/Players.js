@@ -4,7 +4,7 @@ import axios from 'axios';
 import i18n from '@app/i18app';
 import { withTranslation } from 'react-i18next';
 
-import { Table, message, Button, Modal, Form, Input, Space, Tooltip, Typography, Popconfirm } from 'antd';
+import { Table, message, Button, Modal, Space, Tooltip, Typography, Popconfirm } from 'antd';
 import { PlusOutlined, DeleteOutlined } from '@ant-design/icons';
 
 import MfwForm from '@app/mfw/mfwForm/MfwForm';
@@ -73,13 +73,11 @@ class Players extends Component {
     getPlayers() {
         axios.get(window.MFW_APP_PROPS.urls.player.list).then(res => {
             if (res.data.success) {
-                this.setState( state => {
-                    return {
-                        loading: false,
-                        data: res.data.data,
-                        pagination: {
-                            total: res.data.data
-                        }
+                this.setState({
+                    loading: false,
+                    data: res.data.data,
+                    pagination: {
+                        total: res.data.data.length
                     }
                 });
             } else {
@@ -153,7 +151,6 @@ class Players extends Component {
                 message.error(this.props.t(res.data.error));
             }
         }).catch(error => {
-            console.log(error);
             message.error(error.toString());
         });
     }

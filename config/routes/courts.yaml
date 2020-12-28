@@ -1,0 +1,27 @@
+courtsList:
+    path: /list
+    controller: App\Controller\Courts\Main::courts
+    methods: GET
+    
+courtForm:
+    path: /form/{id}
+    controller: App\Controller\Courts\Main::form
+    methods: GET
+    requirements:
+        id: \d+|-1    
+    defaults:
+        id: -1
+
+courtPost:
+    path: /post
+    controller: App\Controller\Courts\Main::post
+    methods: POST
+    
+courtDelete:
+    path: /delete/{id}
+    controller: App\Controller\Courts\Main::delete
+    methods: GET
+    requirements:
+        id: \d+|-1    
+    defaults:
+        id: -1

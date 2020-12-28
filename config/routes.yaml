@@ -5,4 +5,7 @@ mainPage:
 players: 
     resource: routes/players.yaml
     prefix: /players
-    
+
+courts: 
+    resource: routes/courts.yaml
+    prefix: /courts    
