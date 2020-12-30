@@ -1,0 +1,6 @@
+adminCompetition:
+    path: /competition/{id}
+    controller: App\Controller\MainPage::index
+    methods: GET
+    requirements:
+        id: \d+|-1    

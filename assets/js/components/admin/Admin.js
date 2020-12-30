@@ -9,6 +9,7 @@ import Main from '@app/components/admin/Main';
 import Players from '@app/components/admin/Players';
 import Competitions from '@app/components/admin/Competitions';
 import Courts from '@app/components/admin/Courts';
+import Competition from '@app/components/admin/Competition';
 
 const { Header, Footer, Sider, Content } = Layout;
 
@@ -44,10 +45,11 @@ class Admin extends Component {
                             <Route path="/admin/main" component={Main} />
                             <Route path="/admin/competitions" component={Competitions} />
                             <Route path="/admin/courts" component={Courts} />
-                        </Switch>                    
+                            <Route path="/admin/competition/:id(\d+)" component={Competition} />
+                        </Switch>
                     </Content>
                     <Footer>Footer</Footer>
-                </Layout>            
+                </Layout>
             </React.Fragment>
         )
     }

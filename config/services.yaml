@@ -66,3 +66,11 @@ services:
     App\Services\FormTransformer:
         class: App\Services\FormTransformer
 
+    App\Form\Competitions\Add:
+        class: App\Form\Competitions\Add
+        arguments: ['@App\Entity\Courts']
+        
+    App\Form\PeriodType:
+        class: App\Form\PeriodType
+        tags: [form.type]
+        

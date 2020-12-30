@@ -4,7 +4,7 @@ import axios from 'axios';
 import i18n from '@app/i18app';
 import { withTranslation } from 'react-i18next';
 
-import { Table, message, Button, Modal, Space, Tooltip, Typography, Popconfirm } from 'antd';
+import { Table, message, Button, Modal, Tooltip, Typography, Popconfirm } from 'antd';
 import { PlusOutlined, DeleteOutlined } from '@ant-design/icons';
 
 import MfwForm from '@app/mfw/mfwForm/MfwForm';
@@ -14,12 +14,12 @@ import useWithForm from '@app/mfw/mfwForm/MfwFormHOC';
 class Players extends Component {
     constructor(props){
         super(props);
-        this.addPlayerForm = this.addPlayerForm.bind(this);
-        this.postPlayer = this.postPlayer.bind(this);
+        this.addForm = this.addForm.bind(this);
+        this.post = this.post.bind(this);
         this.closeModal = this.closeModal.bind(this);
-        this.getPlayers = this.getPlayers.bind(this);
-        this.showPlayerForm = this.showPlayerForm.bind(this);
-        this.deletePlayer = this.deletePlayer.bind(this);
+        this.list = this.list.bind(this);
+        this.showForm = this.showForm.bind(this);
+        this.delete = this.delete.bind(this);
         
         this.state = {
             loading: true,
@@ -32,13 +32,13 @@ class Players extends Component {
                         return <React.Fragment>
                             <Button 
                               type="link" 
-                              onClick={() => this.showPlayerForm(row.id)}
+                              onClick={() => this.showForm(row.id)}
                               className="mfw-table-button-link">{text}
                             </Button>
                             <Tooltip title={this.props.t('actions.delete')} placement="bottom">
                                 <Popconfirm
                                   title={this.props.t('player.delete_confirm')}
-                                  onConfirm={() => this.deletePlayer(row.id)}
+                                  onConfirm={() => this.delete(row.id)}
                                   okText={this.props.t('confirm.yes')}
                                   cancelText={this.props.t('confirm.no')}>
                                     <Button type="link" 
@@ -67,10 +67,10 @@ class Players extends Component {
     }
     
     componentDidMount() {
-        this.getPlayers();
+        this.list();
     }
 
-    getPlayers() {
+    list() {
         axios.get(window.MFW_APP_PROPS.urls.player.list).then(res => {
             if (res.data.success) {
                 this.setState({
@@ -90,15 +90,15 @@ class Players extends Component {
         });
     }
 
-    addPlayerForm() {
-        this.showPlayerForm(-1);
+    addForm() {
+        this.showForm(-1);
     }
     
-    showPlayerForm(id) {
+    showForm(id) {
         axios.get(window.MFW_APP_PROPS.urls.player.form+'/'+id).then(res => {
             if (res.data.success) {
-                res.data.form.elements.name.label = this.props.t('player.fio');
-                res.data.form.elements.phone.label = this.props.t('player.phone');
+                res.data.form.elements.name.widgetProps.label = this.props.t('player.fio');
+                res.data.form.elements.phone.widgetProps.label = this.props.t('player.phone');
                 res.data.form.action = window.MFW_APP_PROPS.urls.player.post;
                 this.props.form.resetFields();
                 this.setState({
@@ -117,7 +117,7 @@ class Players extends Component {
         });
     }
 
-    postPlayer() {
+    post() {
         this.props.form
             .validateFields()
             .then(values => {
@@ -128,7 +128,7 @@ class Players extends Component {
                     headers: {'Content-Type': 'application/json'}
                 }).then(res => {
                     if (res.data.success) {
-                        this.getPlayers();
+                        this.list();
                     } else {
                         message.error(this.props.t(res.data.error));
                     }
@@ -143,10 +143,10 @@ class Players extends Component {
         this.setState({modal: false});
     }
     
-    deletePlayer(id) {
+    delete(id) {
         axios.get(window.MFW_APP_PROPS.urls.player.delete+'/'+id).then(res => {
             if (res.data.success) {
-                this.getPlayers();
+                this.list();
             } else {
                 message.error(this.props.t(res.data.error));
             }
@@ -164,7 +164,7 @@ class Players extends Component {
             <React.Fragment>
                 <div>
                     <Button
-                      onClick={this.addPlayerForm}
+                      onClick={this.addForm}
                       type="primary"
                       style={{ marginBottom: 16 }}>
                         <PlusOutlined/>
@@ -181,7 +181,7 @@ class Players extends Component {
                     <Modal
                       title={this.props.t(this.state.editPlayer == -1 ? 'player.new' : 'player.edit') }
                       visible={this.state.modal}
-                      onOk={this.postPlayer}
+                      onOk={this.post}
                       onCancel={this.closeModal}>
                         <MfwForm
                            formProps={{
@@ -191,7 +191,7 @@ class Players extends Component {
                                wrapperCol: { span: 16 }
                            }}
                            mfwForm={this.state.form}
-                           success={this.getPlayers}>
+                           success={this.list}>
                             <MfwFormWidget element={this.state.form.elements.name}/>
                             <MfwFormWidget element={this.state.form.elements.phone}/>
                         </MfwForm>

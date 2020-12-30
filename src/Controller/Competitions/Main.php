@@ -1,0 +1,64 @@
+<?php
+namespace App\Controller\Competitions;
+
+use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\HttpFoundation\Request;
+
+use App\Controller\Common;
+use App\Services\FormTransformer;
+
+use App\Entity\Competitions as CompetitionsEntity;
+use App\Form\Competitions\Add;
+
+class Main extends Common
+{
+    public function competitions(CompetitionsEntity $competitionsDB)
+    {
+        return new JsonResponse([
+            'success' => true,
+            'data' => $competitionsDB->competitions()
+        ]);
+    }
+
+    public function addForm(FormTransformer $transformer)
+    {
+        $form = $this->createForm(Add::class, ['id' => -1]);
+        return new JsonResponse([
+            'success' => true,
+            'form' => $transformer->transform($form->createView())
+        ]);
+    }
+
+    public function post(Request $request, CompetitionsEntity $competitionsDB)
+    {
+        $formData = json_decode($request->getContent(), true);
+        if ($formData == null) {
+            return new JsonResponse([
+                'error' => 'common.errors.formData'
+            ]);
+        }
+        $form = $this->createForm(Add::class);
+        $form->submit($formData);
+        if (!$form->isValid()) {
+            return new JsonResponse([
+                'error' => $this->formErrors($form)
+            ]);
+        }
+
+//        $competitionsDB->post($form->getData());
+        return new JsonResponse([
+            'success' => true
+        ]);
+    }
+
+    public function delete(CompetitionsEntity $competitionsDB, $id)
+    {
+        $competition = [
+            'id' => $id,
+        ];
+        $competitionsDB->delete($competition);
+        return new JsonResponse([
+            'success' => true
+        ]);
+    }
+}

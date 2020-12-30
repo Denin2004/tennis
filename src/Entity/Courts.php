@@ -38,4 +38,17 @@ class Courts extends Entity
     {
         $this->provider->db()->executeQuery('update competitions.courts set id=-1, del=true where id=:id', $params);
     }
+
+    public function choices()
+    {
+        $courts = $this->provider->db()->fetchAll(
+            'select courts.id, courts.name
+                from competitions.courts courts'
+        );
+        $res = [];
+        foreach ($courts as $court) {
+            $res[$court['name']] = $court['id'];
+        }
+        return $res;
+    }
 }

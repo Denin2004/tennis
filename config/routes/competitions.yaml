@@ -1,0 +1,32 @@
+competitionsList:
+    path: /list
+    controller: App\Controller\Competitions\Main::competitions
+    methods: GET
+
+competitionAddForm:
+    path: /form/add
+    controller: App\Controller\Competitions\Main::addForm
+    methods: GET
+    
+competitionEdit:
+    path: /edit/{id}
+    controller: App\Controller\Competitions\Main::edit
+    methods: GET
+    requirements:
+        id: \d+|-1    
+    defaults:
+        id: -1
+
+competitionPost:
+    path: /post
+    controller: App\Controller\Competitions\Main::post
+    methods: POST
+    
+competitionDelete:
+    path: /delete/{id}
+    controller: App\Controller\Competitions\Main::delete
+    methods: GET
+    requirements:
+        id: \d+|-1    
+    defaults:
+        id: -1

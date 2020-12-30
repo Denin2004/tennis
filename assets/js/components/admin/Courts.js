@@ -15,11 +15,11 @@ class Courts extends Component {
         super(props);
         this.isEditing = this.isEditing.bind(this);
 
-        this.addCourtRow = this.addCourtRow.bind(this);
-        this.postCourt = this.postCourt.bind(this);
-        this.getCourts = this.getCourts.bind(this);
-        this.showCourtRow = this.showCourtRow.bind(this);
-        this.deleteCourt = this.deleteCourt.bind(this);
+        this.newRow = this.newRow.bind(this);
+        this.post = this.post.bind(this);
+        this.list = this.list.bind(this);
+        this.editRow = this.editRow.bind(this);
+        this.delete = this.delete.bind(this);
         this.cancelEdit = this.cancelEdit.bind(this);
 
         this.state = {
@@ -63,7 +63,7 @@ class Courts extends Component {
                             (<Space size="middle">
                                 <Button
                                   type="link"
-                                  onClick={this.postCourt}
+                                  onClick={this.post}
                                   className="mfw-table-button-link">{this.props.t('actions.post')}
                                 </Button>
                                 <Button
@@ -75,12 +75,12 @@ class Courts extends Component {
                             (<Space size="middle">
                                 <Button
                                   type="link"
-                                  onClick={() => this.showCourtRow(row.id)}
+                                  onClick={() => this.editRow(row.id)}
                                   className="mfw-table-button-link">{this.props.t('actions.edit')}
                                 </Button>
                                 <Popconfirm
                                   title={this.props.t('court.delete_confirm')}
-                                  onConfirm={() => this.deleteCourt(row.id)}
+                                  onConfirm={() => this.delete(row.id)}
                                   okText={this.props.t('confirm.yes')}
                                   cancelText={this.props.t('confirm.no')}>
                                     <Button type="link"
@@ -102,14 +102,14 @@ class Courts extends Component {
     }
 
     componentDidMount() {
-        this.getCourts();
+        this.list();
     }
 
     isEditing(row) {
         return this.state.editCourt === row.id;
     }
 
-    getCourts() {
+    list() {
         axios.get(window.MFW_APP_PROPS.urls.court.list).then(res => {
             if (res.data.success) {
                 this.setState({
@@ -130,11 +130,11 @@ class Courts extends Component {
         });
     }
 
-    addCourtRow() {
-        this.showCourtRow(-1);
+    newRow() {
+        this.editRow(-1);
     }
 
-    showCourtRow(id) {
+    editRow(id) {
         axios.get(window.MFW_APP_PROPS.urls.court.form+'/'+id).then(res => {
             if (res.data.success) {
                 this.props.form.resetFields();
@@ -167,7 +167,7 @@ class Courts extends Component {
         });
     }
 
-    postCourt() {
+    post() {
         this.props.form
             .validateFields()
             .then(values => {
@@ -181,7 +181,7 @@ class Courts extends Component {
                         var {data} = this.state;
                         const postRowIndex = this.state.data.findIndex(function(element){return element.id/1 === values.id/1});
                         if (postRowIndex == -1) {
-                            this.getCourts();
+                            this.list();
                             return;
                         }
                         Object.keys(values).map(key => {
@@ -208,13 +208,13 @@ class Courts extends Component {
             });
     }
 
-    deleteCourt(id) {
+    delete(id) {
         axios.get(window.MFW_APP_PROPS.urls.court.delete+'/'+id).then(res => {
             if (res.data.success) {
                 var {data} = this.state;
                 const deleteRowIndex = this.state.data.findIndex(function(element){return element.id === id});
                 if (deleteRowIndex == -1) {
-                    this.getCourts();
+                    this.list();
                     return;
                 }
                 data.splice(deleteRowIndex, 1);
@@ -259,7 +259,7 @@ class Courts extends Component {
             <React.Fragment>
                 <div>
                     <Button
-                      onClick={this.addCourtRow}
+                      onClick={this.newRow}
                       type="primary"
                       style={{ marginBottom: 16 }}>
                         <PlusOutlined/>

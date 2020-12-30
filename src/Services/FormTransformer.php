@@ -20,14 +20,18 @@ class FormTransformer
 
     private function formElement(FormView $element)
     {
-        $res = [];
+        $cache_key = explode('_', $element->vars['cache_key']);
         if (count($element->children) != 0) {
             foreach ($element->children as $key => $child) {
                 $res[$key] = $this->formElement($child);
             }
+            $res['id'] = $element->vars['id'];
+            $res['type'] = array_pop($cache_key);
+            $res['widgetProps'] = $element->vars['widgetProps'] ? $element->vars['widgetProps'] : [];
+            $res['widgetProps']['id'] = $element->vars['id'];
+            $res['widgetProps']['name'] = $element->vars['name'];
             return $res;
         }
-        $cache_key = explode('_', $element->vars['cache_key']);
         $res = [
             'widgetProps' => [
                 'id' => $element->vars['id'],
@@ -41,6 +45,7 @@ class FormTransformer
             $res['multiple'] = $element->vars['multiple'];
             $res['expanded'] = $element->vars['expanded'];
             $res['choices'] = [];
+            $res['widgetProps']['translate'] = $element->vars['choice_translation_domain'] === false ? "false" : "true";
             foreach ($element->vars['choices'] as $choice) {
                 $res['choices'][] = [
                     'label' => $choice->label,

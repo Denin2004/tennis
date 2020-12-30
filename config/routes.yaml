@@ -1,6 +1,10 @@
 mainPage:
     path: /
     controller: App\Controller\MainPage::index
+
+admin: 
+    resource: routes/admin.yaml
+    prefix: /admin
     
 players: 
     resource: routes/players.yaml
