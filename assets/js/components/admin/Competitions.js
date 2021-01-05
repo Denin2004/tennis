@@ -21,6 +21,7 @@ class Competitions extends Component {
         this.addForm = this.addForm.bind(this);
         this.closeModal = this.closeModal.bind(this);
         this.post = this.post.bind(this);
+        this.list = this.list.bind(this);
     }
 
     addForm() {
@@ -51,6 +52,8 @@ class Competitions extends Component {
         this.props.form
             .validateFields()
             .then(values => {
+                values.period[0] = values.period[0].format(this.state.form.elements.period.widgetProps.rangeProps.format);
+                values.period[1] = values.period[1].format(this.state.form.elements.period.widgetProps.rangeProps.format);
                 axios({
                     method: this.state.form.method,
                     url: window.MFW_APP_PROPS.urls.competition.post,
@@ -58,6 +61,10 @@ class Competitions extends Component {
                     headers: {'Content-Type': 'application/json'}
                 }).then(res => {
                     if (res.data.success) {
+                        if (res.data.id != undefined) {
+                            this.props.history.push('/admin/competition/'+res.data.id);
+                            return; 
+                        }
                         this.list();
                     } else {
                         message.error(this.props.t(res.data.error));
@@ -73,8 +80,27 @@ class Competitions extends Component {
         this.setState({modal: false});
     }
 
+    list() {
+        axios.get(window.MFW_APP_PROPS.urls.competition.list).then(res => {
+            if (res.data.success) {
+                this.setState({
+                    loading: false,
+                    data: res.data.data,
+                    pagination: {
+                        total: res.data.data.length
+                    }
+                });
+            } else {
+                message.error(this.props.t(res.data.error));
+                this.setState({loading: false})
+            }
+        }).catch(error => {
+            message.error(error.toString());
+            this.setState({loading: false});
+        });
+    }
+
     render() {
-        var id = 30;
         return (
             <React.Fragment>
                 <div>
@@ -105,7 +131,6 @@ class Competitions extends Component {
                         </MfwForm>
                     </Modal> : ''
                 }
-                
             </React.Fragment>
         )
 /*        

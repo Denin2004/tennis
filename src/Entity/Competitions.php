@@ -17,10 +17,15 @@ class Competitions extends Entity
 
     public function post($params)
     {
+        $params['format'] = $this->provider->dateTimeFormat();
+        $params['from'] = $params['period'][0];
+        $params['to'] = $params['period'][1];
         if ($params['id'] == -1) {
-            $this->provider->db()->executeQuery('insert into players.players (name, phone)values(:name, :phone)', $params);
+            return $this->provider->db()->fetchAll('insert into competitions.competitions (court_id, type, "from", "to")
+                values(:court_id, :type, to_date(:from, :format), to_date(:to, :format)) returning id', $params)[0];
         } else {
-            $this->provider->db()->executeQuery('update players.players set name=:name, phone=:phone where id=:id', $params);
+            $this->provider->db()->executeQuery('update competitions.competitions set court_id=:court_id,
+                type=:type "from"=to_date(:from, :format), "to"=to_date(:to, :format) where id=:id', $params);
         }
     }
 

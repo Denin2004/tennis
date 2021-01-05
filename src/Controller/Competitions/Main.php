@@ -44,10 +44,10 @@ class Main extends Common
                 'error' => $this->formErrors($form)
             ]);
         }
-
-//        $competitionsDB->post($form->getData());
+        $res = $competitionsDB->post($form->getData());
         return new JsonResponse([
-            'success' => true
+            'success' => true,
+            'id' => $formData['id'] == -1 ? $res['id'] : false
         ]);
     }
 

@@ -13,7 +13,6 @@ class MfwPeriodType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
-        dump($builder, $options);
         $builder->add('0', TextType::class)
             ->add('1', TextType::class);
     }
