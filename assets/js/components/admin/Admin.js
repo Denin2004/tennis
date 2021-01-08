@@ -7,9 +7,9 @@ import { withTranslation } from 'react-i18next';
 
 import Main from '@app/components/admin/Main';
 import Players from '@app/components/admin/Players';
-import Competitions from '@app/components/admin/Competitions';
+import Competitions from '@app/components/admin/competitions/Competitions';
 import Courts from '@app/components/admin/Courts';
-import Competition from '@app/components/admin/Competition';
+import Competition from '@app/components/admin/competitions/Competition';
 
 const { Header, Footer, Sider, Content } = Layout;
 

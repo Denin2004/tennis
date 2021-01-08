@@ -8,10 +8,14 @@ class Competitions extends Entity
     public function competitions()
     {
         return $this->provider->db()->fetchAll(
-            'select players.id, players.name, players.phone
-            from players.players players
-            where players.del = false
-            order by players.name'
+            'select competitions.id, to_char(competitions.from::timestamp, :format) as "from",
+                to_char(competitions.to::timestamp, :format) as "to", competitions.type, courts.name court
+                from competitions. competitions
+            left join competitions.courts courts on(courts.id=competitions.court_id)
+            order by competitions.from desc',
+            [
+                'format' => $this->provider->dateTimeFormat()
+            ]
         );
     }
 
@@ -22,21 +26,32 @@ class Competitions extends Entity
         $params['to'] = $params['period'][1];
         if ($params['id'] == -1) {
             return $this->provider->db()->fetchAll('insert into competitions.competitions (court_id, type, "from", "to")
-                values(:court_id, :type, to_date(:from, :format), to_date(:to, :format)) returning id', $params)[0];
+                values(:court_id, :type, to_timestamp(:from, :format),
+                to_timestamp(:to, :format)) returning id', $params)[0];
         } else {
             $this->provider->db()->executeQuery('update competitions.competitions set court_id=:court_id,
-                type=:type "from"=to_date(:from, :format), "to"=to_date(:to, :format) where id=:id', $params);
+                type=:type "from"=to_timestamp(:from, :format), "to"=to_timestamp(:to, :format) where id=:id', $params);
         }
     }
 
-    public function player($params)
+    public function competition($params)
     {
+        $params['format'] = $this->provider->dateTimeFormat();
         $res = $this->provider->db()->fetchAll(
-            'select players.id, players.name, players.phone
-            from players.players players where players.id=:id',
+            'select competitions.id, to_char(competitions.from::timestamp, :format) as "from",
+                to_char(competitions.to::timestamp, :format) as "to", competitions.type, competitions.court_id
+                from competitions.competitions
+            where competitions.id=:id',
             $params
         );
-        return isset($res[0]) ? $res[0] : false;
+        if (isset($res[0])) {
+            $res[0]['period'] = [
+                '0' => $res[0]['from'],
+                '1' => $res[0]['to']
+            ];
+            return $res[0];
+        }
+        return false;
     }
 
     public function delete($params)

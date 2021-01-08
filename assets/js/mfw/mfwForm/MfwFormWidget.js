@@ -2,9 +2,10 @@ import React, {Component} from 'react';
 
 import i18n from '@app/i18app';
 import { withTranslation } from 'react-i18next';
-import moment from 'moment';
 
 import { Form, Input, Button, Select, DatePicker } from 'antd';
+
+import MfwPeriod from '@app/mfw/mfwForm/MfwPeriod';
 
 class MfwFormWidget extends Component {
     constructor(props){
@@ -12,7 +13,8 @@ class MfwFormWidget extends Component {
         this.textElement = this.textElement.bind(this);
         this.hiddenElement = this.hiddenElement.bind(this);
         this.buttonElement = this.buttonElement.bind(this);
-        this.disabledTime = this.disabledTime.bind(this);
+        this.periodElement = this.periodElement.bind(this);
+
         this.state = {
             widgetProps : this.props.widgetProps ? 
             (this.props.element.widgetProps ? {...this.props.element.widgetProps, ...this.props.widgetProps} : this.props.widgetProps) : 
@@ -37,36 +39,9 @@ class MfwFormWidget extends Component {
     };
     
     periodElement() {
-        var {rangeProps} = this.state.widgetProps;
-        if (rangeProps.showTime) {
-            rangeProps.showTime = {
-                format: moment.localeData().longDateFormat('LT')
-            }
-            if (rangeProps.disableTime) {
-                rangeProps.disabledTime = this.disabledTime;
-                rangeProps.showTime.hideDisabledOptions = true;
-            }
-            rangeProps.format = moment.localeData().longDateFormat('L')+
-                    ' '+moment.localeData().longDateFormat('LT');
-        } else {
-            rangeProps.format = moment.localeData().longDateFormat('L');
-        }
         return (
-            <Form.Item {...this.state.widgetProps.itemProps}>
-                <DatePicker.RangePicker {...rangeProps} />
-            </Form.Item>
+            <MfwPeriod element={this.props.element}/>
         );
-    }
-    
-    disabledTime() {
-        return {
-            disabledHours: () => this.state.widgetProps.rangeProps.disableTime.disabledHours ? 
-               this.state.widgetProps.rangeProps.disableTime.disabledHours : [],
-            disabledMinutes: () => this.state.widgetProps.rangeProps.disableTime.disabledMinutes ? 
-               this.state.widgetProps.rangeProps.disableTime.disabledMinutes : [],
-            disabledSeconds: () => this.state.widgetProps.rangeProps.disableTime.disabledSeconds ? 
-               this.state.widgetProps.rangeProps.disableTime.disabledSeconds : []
-       };
     }
 
     choiceElement() {

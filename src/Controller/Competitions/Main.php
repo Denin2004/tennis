@@ -20,6 +20,22 @@ class Main extends Common
         ]);
     }
 
+    public function edit(FormTransformer $transformer, CompetitionsEntity $competitionsDB, $id)
+    {
+        $competition = $competitionsDB->competition(['id' => $id]);
+        if (!$competition) {
+            return new JsonResponse([
+                'error' => 'player.errors.not_found'
+            ]);
+        }
+
+        $form = $this->createForm(Add::class, $competition);
+        return new JsonResponse([
+            'success' => true,
+            'form' => $transformer->transform($form->createView())
+        ]);
+    }
+
     public function addForm(FormTransformer $transformer)
     {
         $form = $this->createForm(Add::class, ['id' => -1]);

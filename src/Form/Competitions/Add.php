@@ -38,11 +38,9 @@ class Add extends AbstractType
             MfwPeriodType::class,
             [
                 'widgetProps' => [
-                    'rangeProps' => [
-                        'disableTime' => [
-                            'disabledMinutes' => $this->disabledMinutes()
-                        ],
-                        'showTime' => true
+                    'showTime' => true,
+                    'disableTime' => [
+                        'disabledMinutes' => $this->disabledMinutes()
                     ]
                 ]
             ]

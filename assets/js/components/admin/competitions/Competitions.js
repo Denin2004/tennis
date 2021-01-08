@@ -6,6 +6,7 @@ import { PlusOutlined } from '@ant-design/icons';
 
 import axios from 'axios';
 import { withTranslation } from 'react-i18next';
+import moment from 'moment';
 
 import MfwForm from '@app/mfw/mfwForm/MfwForm';
 import MfwFormWidget from '@app/mfw/mfwForm/MfwFormWidget';
@@ -16,7 +17,34 @@ class Competitions extends Component {
         super(props);
         this.state = {
             loading: true,
-            modal: false
+            modal: false,
+            columns: [
+                {
+                    title: this.props.t('date._date'),
+                    dataIndex: 'from',
+                    render: (text, row) => {
+                        var from = moment(row.from, window.MFW_APP_PROPS.formats.datetime),
+                            to = moment(row.to, window.MFW_APP_PROPS.formats.datetime);
+                        if (to.diff(from, 'days') > 1) {
+                            ret
+                        }
+                        return <Link to={'/admin/competition/'+row.id}>
+                            {to.diff(from, 'days') >= 1 ? row.from+' - '+row.to : text+' - '+to.format(window.MFW_APP_PROPS.formats.time)}</Link>;
+                    }
+
+                },
+                {
+                    title: this.props.t('competition.type'),
+                    dataIndex: 'type',
+                    render: (text, row) => {
+                        return this.props.t(text);
+                    }
+                },
+                {
+                    title: this.props.t('court._court'),
+                    dataIndex: 'court'
+                }
+            ]
         }
         this.addForm = this.addForm.bind(this);
         this.closeModal = this.closeModal.bind(this);
@@ -63,7 +91,7 @@ class Competitions extends Component {
                     if (res.data.success) {
                         if (res.data.id != undefined) {
                             this.props.history.push('/admin/competition/'+res.data.id);
-                            return; 
+                            return;
                         }
                         this.list();
                     } else {
@@ -100,46 +128,16 @@ class Competitions extends Component {
         });
     }
 
+    componentDidMount() {
+        this.list();
+    }
+
     render() {
         return (
             <React.Fragment>
                 <div>
                     <Button
                       onClick={this.addForm}
-                      type="primary"
-                      style={{ marginBottom: 16 }}>
-                        <PlusOutlined/>
-                    </Button>
-                </div>
-                {this.state.modal == true ?
-                    <Modal
-                      title={this.props.t('competition.new') }
-                      visible={this.state.modal}
-                      onOk={this.post}
-                      onCancel={this.closeModal}>
-                        <MfwForm
-                           formProps={{
-                               form: this.props.form,
-                               name: this.state.form.from,
-                               labelCol: { span: 8 },
-                               wrapperCol: { span: 16 }
-                           }}
-                           mfwForm={this.state.form}
-                           success={this.list}>
-                            <MfwFormWidget element={this.state.form.elements.type}/>
-                            <MfwFormWidget element={this.state.form.elements.court_id}/>
-                        </MfwForm>
-                    </Modal> : ''
-                }
-            </React.Fragment>
-        )
-/*        
-        return (
-            <React.Fragment>
-                <div>
-                    <Link to='/admin/main'>{this.props.t('common.mainPage')}</Link>
-                    <Button
-                    
                       type="primary"
                       style={{ marginBottom: 16 }}>
                         <PlusOutlined/>
@@ -152,8 +150,28 @@ class Competitions extends Component {
                     pagination={this.state.pagination}
                     loading={this.state.loading}
                 />
+                {this.state.modal == true ?
+                    <Modal
+                      title={this.props.t('competition.new') }
+                      visible={this.state.modal}
+                      onOk={this.post}
+                      onCancel={this.closeModal}>
+                        <MfwForm
+                           formProps={{
+                               form: this.props.form,
+                               name: this.state.form.name,
+                               labelCol: { span: 8 },
+                               wrapperCol: { span: 16 }
+                           }}
+                           mfwForm={this.state.form}
+                           success={this.list}>
+                            <MfwFormWidget element={this.state.form.elements.type}/>
+                            <MfwFormWidget element={this.state.form.elements.court_id}/>
+                        </MfwForm>
+                    </Modal> : ''
+                }
             </React.Fragment>
-        )*/
+        )
     }
 }
 

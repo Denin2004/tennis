@@ -6,8 +6,6 @@
 parameters:
     db_date_format: '%env(string:DB_DATE_FORMAT)%'
     db_time_format: '%env(string:DB_TIME_FORMAT)%'
-    js_date_format: '%env(string:JS_DATE_FORMAT)%'
-    js_time_format: '%env(string:JS_TIME_FORMAT)%'
     locale: '%env(string:LOCALE)%'
 
 

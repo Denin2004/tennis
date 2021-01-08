@@ -21,10 +21,9 @@ class MfwPeriodType extends AbstractType
     {
         $resolver->setDefaults([
             'widgetProps' => [
+                'showTime' => false,
                 'itemProps' => [],
-                'rangeProps' => [
-                    'showTime' => false
-                ]
+                'rangeProps' => []
             ]
         ]);
     }
@@ -34,5 +33,8 @@ class MfwPeriodType extends AbstractType
         $view->vars['widgetProps'] = $options['widgetProps'];
         $view->vars['widgetProps']['itemProps']['id'] = $view->vars['id'];
         $view->vars['widgetProps']['itemProps']['name'] = $view->vars['name'];
+        if (isset($view->vars['data'])) {
+            $view->vars['widgetProps']['rangeProps']['defaultValue'] = $view->vars['data'];
+        }
     }
 }

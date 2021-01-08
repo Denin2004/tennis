@@ -12,12 +12,6 @@ class MainPage extends AbstractController
      */
     public function index()
     {
-        return $this->render(
-            'base.html.twig',
-            [
-                'js_date_format' => $this->getParameter('js_date_format'),
-                'js_time_format' => $this->getParameter('js_time_format')
-            ]
-        );
+        return $this->render('base.html.twig');
     }
 }

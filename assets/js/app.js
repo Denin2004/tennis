@@ -15,6 +15,12 @@ import 'moment/locale/ru';
 
 moment.locale('ru');
 
+window.MFW_APP_PROPS.formats = {
+    date: moment.localeData().longDateFormat('L'),
+    time: moment.localeData().longDateFormat('LT'),
+    datetime: moment.localeData().longDateFormat('L')+' '+moment.localeData().longDateFormat('LT')
+};
+
 ReactDOM.render(
     <div className="App">
         <Router>
