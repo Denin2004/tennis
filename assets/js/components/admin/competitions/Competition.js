@@ -16,14 +16,14 @@ class Competition extends Component {
         return (
             <div className="mfw-site-layout">
                 <Tabs defaultActiveKey="1">
-                    <Tabs.TabPane tab="Tab 1" key="1">
-                        <Main id={this.props.match.params.id}/>
-                    </Tabs.TabPane>
-                    <Tabs.TabPane tab="Tab 2" key="2">
-                        ontent of Tab Pane 2
-                    </Tabs.TabPane>
-                    <Tabs.TabPane tab="Tab 3" key="3">
+                    <Tabs.TabPane tab={this.props.t('competition.stages_and_results')} key="1">
                       Content of Tab Pane 3
+                    </Tabs.TabPane>
+                    <Tabs.TabPane tab={this.props.t('competition.competitiors')} key="2">
+                        Competitors
+                    </Tabs.TabPane>
+                    <Tabs.TabPane tab={this.props.t('competition.main')} key="3">
+                        <Main id={this.props.match.params.id}/>
                     </Tabs.TabPane>
                 </Tabs>
            </div>)

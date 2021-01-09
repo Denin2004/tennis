@@ -6,7 +6,6 @@ import { PlusOutlined } from '@ant-design/icons';
 
 import axios from 'axios';
 import { withTranslation } from 'react-i18next';
-import moment from 'moment';
 
 import MfwForm from '@app/mfw/mfwForm/MfwForm';
 import MfwFormWidget from '@app/mfw/mfwForm/MfwFormWidget';
@@ -23,15 +22,11 @@ class Competitions extends Component {
                     title: this.props.t('date._date'),
                     dataIndex: 'from',
                     render: (text, row) => {
-                        var from = moment(row.from, window.MFW_APP_PROPS.formats.datetime),
-                            to = moment(row.to, window.MFW_APP_PROPS.formats.datetime);
-                        if (to.diff(from, 'days') > 1) {
-                            ret
-                        }
+                        var from = window.MFW_APP_PROPS.formats.datetimeToMoment(row.from),
+                            to = window.MFW_APP_PROPS.formats.datetimeToMoment(row.to);
                         return <Link to={'/admin/competition/'+row.id}>
                             {to.diff(from, 'days') >= 1 ? row.from+' - '+row.to : text+' - '+to.format(window.MFW_APP_PROPS.formats.time)}</Link>;
                     }
-
                 },
                 {
                     title: this.props.t('competition.type'),
@@ -80,8 +75,6 @@ class Competitions extends Component {
         this.props.form
             .validateFields()
             .then(values => {
-                values.period[0] = values.period[0].format(this.state.form.elements.period.widgetProps.rangeProps.format);
-                values.period[1] = values.period[1].format(this.state.form.elements.period.widgetProps.rangeProps.format);
                 axios({
                     method: this.state.form.method,
                     url: window.MFW_APP_PROPS.urls.competition.post,

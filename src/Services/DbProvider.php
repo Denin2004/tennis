@@ -2,8 +2,9 @@
 namespace App\Services;
 
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
-use Symfony\Component\DependencyInjection\ContainerInterface;
 use Doctrine\DBAL\Driver\Connection;
+
+use App\Services\SiteConfig;
 
 class DbProvider
 {
@@ -11,14 +12,15 @@ class DbProvider
     protected $user;
     protected $dateFormat;
     protected $timeFormat;
+    protected $dateTimeFormat;
     protected $token;
 
-    public function __construct(Connection $db, TokenStorageInterface $token, ContainerInterface $container)
+    public function __construct(Connection $db, TokenStorageInterface $token, SiteConfig $siteConfig)
     {
         $this->db = $db;
         $this->token = $token;
-        $this->dateFormat = $container->getParameter('db_date_format');
-        $this->timeFormat = $container->getParameter('db_time_format');
+        $this->dateFormat = $siteConfig->get('db_date_format');
+        $this->timeFormat = $siteConfig->get('db_time_format');
     }
 
     public function db()

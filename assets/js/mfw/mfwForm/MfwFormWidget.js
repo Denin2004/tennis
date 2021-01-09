@@ -3,7 +3,7 @@ import React, {Component} from 'react';
 import i18n from '@app/i18app';
 import { withTranslation } from 'react-i18next';
 
-import { Form, Input, Button, Select, DatePicker } from 'antd';
+import { Form, Input, Button, Select} from 'antd';
 
 import MfwPeriod from '@app/mfw/mfwForm/MfwPeriod';
 
@@ -60,8 +60,8 @@ class MfwFormWidget extends Component {
 
     buttonElement() {
         return (
-            <Form.Item>
-                <Button htmlType="submit" type={this.props.element.type ? this.props.element.type : 'primary'}>{this.props.element.title}</Button>
+            <Form.Item {...this.state.widgetProps}>
+                <Button htmlType="submit" {...this.props.element.buttonProps}>{this.props.element.title}</Button>
             </Form.Item>
         );
     };

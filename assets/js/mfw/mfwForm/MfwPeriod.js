@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
 
-import moment from 'moment';
+import moment from 'moment-timezone';
 
 import { Form, DatePicker } from 'antd';
 
@@ -11,7 +11,6 @@ class MfwPeriod extends Component {
         var rangeProps = {
             format: props.element.widgetProps.showTime ? window.MFW_APP_PROPS.formats.datetime : 
                 window.MFW_APP_PROPS.formats.date
-            
         }
         if (props.element.widgetProps.showTime) {
             rangeProps.showTime = props.element.widgetProps.showTime;
@@ -42,12 +41,12 @@ class MfwPeriod extends Component {
                this.props.element.widgetProps.disableTime.disabledMinutes : [],
             disabledSeconds: () => this.props.element.widgetProps.disableTime.disabledSeconds ? 
                this.props.element.widgetProps.disableTime.disabledSeconds : []
-       };
+        }
     }
 
     render() {
         return (
-                <Form.Item {...this.props.element.widgetProps.itemProps}>
+            <Form.Item {...this.props.element.widgetProps.itemProps}>
                 <DatePicker.RangePicker {...this.state.rangeProps} />
             </Form.Item>
         )

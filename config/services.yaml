@@ -50,7 +50,7 @@ services:
 
     app.dbprovider:
         class: App\Services\DbProvider
-        arguments: ['@db_connection', '@security.token_storage', '@service_container']
+        arguments: ['@db_connection', '@security.token_storage', '@App\Services\SiteConfig']
 
     app.common.controller:
         class: App\Controller\Common
@@ -70,5 +70,10 @@ services:
         
     App\Form\PeriodType:
         class: App\Form\PeriodType
+        arguments: ['@App\Services\SiteConfig']
         tags: [form.type]
         
+    App\Services\SiteConfig:
+        class: App\Services\SiteConfig
+        arguments: ['%kernel.project_dir%']
+        public: true

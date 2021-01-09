@@ -8,13 +8,38 @@ use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\Form\FormView;
+use Symfony\Component\Form\CallbackTransformer;
+
+use App\Services\SiteConfig;
 
 class MfwPeriodType extends AbstractType
 {
+
+    public function __construct(SiteConfig $siteConfig)
+    {
+        $this->dateFormat = $siteConfig->get('php_date_format');
+        $this->timeFormat = $siteConfig->get('php_time_format');
+    }
+
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
+        $this->options = $options;
         $builder->add('0', TextType::class)
             ->add('1', TextType::class);
+        $transformer = new CallbackTransformer(
+            function ($transform) {
+                return $transform;
+            },
+            function ($reverseTransform) {
+                $dt = new \DateTime($reverseTransform);
+                return $this->options['widgetProps']['showTime'] === true ?
+                    $dt->format($this->dateFormat.' '.$this->timeFormat) : $dt->format($this->timeFormat);
+            }
+        );
+        $builder->get('0')
+            ->addModelTransformer($transformer);
+        $builder->get('1')
+            ->addModelTransformer($transformer);
     }
 
     public function configureOptions(OptionsResolver $resolver): void

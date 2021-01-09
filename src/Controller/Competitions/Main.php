@@ -28,7 +28,6 @@ class Main extends Common
                 'error' => 'player.errors.not_found'
             ]);
         }
-
         $form = $this->createForm(Add::class, $competition);
         return new JsonResponse([
             'success' => true,

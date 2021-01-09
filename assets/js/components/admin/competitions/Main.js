@@ -6,7 +6,6 @@ import { PlusOutlined } from '@ant-design/icons';
 import axios from 'axios';
 import i18n from '@app/i18app';
 import { withTranslation } from 'react-i18next';
-import moment from 'moment';
 
 import MfwForm from '@app/mfw/mfwForm/MfwForm';
 import MfwFormWidget from '@app/mfw/mfwForm/MfwFormWidget';
@@ -24,12 +23,15 @@ class Main extends Component {
         axios.get(window.MFW_APP_PROPS.urls.competition.edit+'/'+this.props.id).then(res => {
             if (res.data.success) {
                 res.data.form.action = window.MFW_APP_PROPS.urls.competition.post;
+                res.data.form.elements.type.widgetProps.label = this.props.t('competition.type');
+                res.data.form.elements.court_id.widgetProps.label = this.props.t('court._court');
+                res.data.form.elements.period.widgetProps.itemProps.label = this.props.t('date._date');
                 this.props.form.resetFields();
                 res.data.form.initialValues = {
                     period: []
                 };
                 res.data.form.elements.period.widgetProps.rangeProps.defaultValue.map(function(value){
-                    res.data.form.initialValues.period.push(moment(value, window.MFW_APP_PROPS.formats.datetime));
+                    res.data.form.initialValues.period.push(window.MFW_APP_PROPS.formats.datetimeToMoment(value));
                 });
                 delete res.data.form.elements.period.widgetProps.rangeProps.defaultValue;
                 this.setState({
@@ -62,6 +64,18 @@ class Main extends Component {
                            mfwForm={this.state.form}>
                             <MfwFormWidget element={this.state.form.elements.type}/>
                             <MfwFormWidget element={this.state.form.elements.court_id}/>
+                            <MfwFormWidget element={this.state.form.elements.period}/>
+                            <MfwFormWidget element={{
+                                type: 'button', 
+                                title: this.props.t('actions.post'), 
+                                widgetProps: {
+                                    label: ' ',
+                                    colon: false
+                                }, 
+                                buttonProps: {
+                                    type: 'primary'
+                                }
+                            }}/>        
                         </MfwForm>
                     </Col>
                 </Row>

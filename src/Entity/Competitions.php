@@ -30,7 +30,7 @@ class Competitions extends Entity
                 to_timestamp(:to, :format)) returning id', $params)[0];
         } else {
             $this->provider->db()->executeQuery('update competitions.competitions set court_id=:court_id,
-                type=:type "from"=to_timestamp(:from, :format), "to"=to_timestamp(:to, :format) where id=:id', $params);
+                type=:type, "from"=to_timestamp(:from, :format), "to"=to_timestamp(:to, :format) where id=:id', $params);
         }
     }
 

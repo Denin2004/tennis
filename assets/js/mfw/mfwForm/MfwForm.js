@@ -22,7 +22,7 @@ class MfwForm extends Component {
         axios({
             method: this.props.mfwForm.method,
             url: this.props.mfwForm.action,
-            data: values,
+            data: values
         }).then(res => {
             if (res.data.success) {
                 this.props.success(res.data);
