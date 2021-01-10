@@ -31,6 +31,10 @@
             "mensdouble": "Мужская пара",
             "womensdouble": "Женская пара",
             "mixt": "Микст"
+        },
+        "errors": {
+            "games_played": "Есть сыгранные игры",
+            "stage_config": "Неправильная конфигурация этапа"
         }
     },
     "common": {
