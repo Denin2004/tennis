@@ -16,7 +16,11 @@ urls: {
         addForm: "{{ path('competitionAddForm') }}",
         edit: "{{ path('competitionEdit') }}",
         post: "{{ path('competitionPost') }}",
-        delete: "{{ path('competitionDelete') }}"
-    },
-    
+        delete: "{{ path('competitionDelete') }}",
+        competitors: {
+            list: "{{ path('competitorsList')}}",
+            edit: "{{ path('competitorForm') }}",
+            post: "{{ path('competitorPost') }}"
+        }
+    }
 }

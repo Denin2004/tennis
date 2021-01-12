@@ -7,7 +7,7 @@ use Symfony\Component\HttpFoundation\Request;
 use App\Controller\Common;
 use App\Services\FormTransformer;
 
-use App\Entity\Competitions as CompetitionsEntity;
+use App\Entity\Competitions\Main as CompetitionsEntity;
 use App\Form\Competitions\Add;
 
 class Main extends Common

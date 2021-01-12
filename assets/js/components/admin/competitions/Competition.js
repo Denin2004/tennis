@@ -6,6 +6,7 @@ import { PlusOutlined } from '@ant-design/icons';
 import i18n from '@app/i18app';
 import { withTranslation } from 'react-i18next';
 import Main from '@app/components/admin/competitions/Main';
+import Competitors from '@app/components/admin/competitions/Competitors';
 
 class Competition extends Component {
     constructor(props){
@@ -20,10 +21,10 @@ class Competition extends Component {
                       Content of Tab Pane 3
                     </Tabs.TabPane>
                     <Tabs.TabPane tab={this.props.t('competition.competitiors')} key="2">
-                        Competitors
+                        <Competitors competition_id={this.props.match.params.id}/>
                     </Tabs.TabPane>
                     <Tabs.TabPane tab={this.props.t('competition.main')} key="3">
-                        <Main id={this.props.match.params.id}/>
+                        <Main competition_id={this.props.match.params.id}/>
                     </Tabs.TabPane>
                 </Tabs>
            </div>)

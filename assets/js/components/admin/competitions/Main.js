@@ -20,7 +20,7 @@ class Main extends Component {
     }
 
     componentDidMount() {
-        axios.get(window.MFW_APP_PROPS.urls.competition.edit+'/'+this.props.id).then(res => {
+        axios.get(window.MFW_APP_PROPS.urls.competition.edit+'/'+this.props.competition_id).then(res => {
             if (res.data.success) {
                 res.data.form.action = window.MFW_APP_PROPS.urls.competition.post;
                 res.data.form.elements.type.widgetProps.label = this.props.t('competition.type');

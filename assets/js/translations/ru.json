@@ -24,6 +24,7 @@
         "type": "Тип",
         "main": "Общая информация",
         "competitiors": "Участники",
+        "competitior": "Участник",
         "stages_and_results": "Этапы и результаты",
         "types" : {
            "mens": "Мужчины",
@@ -34,7 +35,8 @@
         },
         "errors": {
             "games_played": "Есть сыгранные игры",
-            "stage_config": "Неправильная конфигурация этапа"
+            "stage_config": "Неправильная конфигурация этапа",
+            "competitor_not_found": "Участник не найден"
         }
     },
     "common": {

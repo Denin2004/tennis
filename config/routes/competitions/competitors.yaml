@@ -1,0 +1,31 @@
+competitorsList:
+    path: /list/{competition_id}
+    controller: App\Controller\Competitions\Competitors::competitors
+    methods: GET
+    requirements:
+        competition_id: \d+|-1
+    defaults:
+        competition_id: -1
+
+competitorsForm:
+    path: /form/{id}
+    controller: App\Controller\Competitions\Competitors::form
+    methods: GET
+    requirements:
+        id: \d+|-1
+    defaults:
+        id: -1
+
+competitorsPost:
+    path: /post
+    controller: App\Controller\Competitions\Competitors::post
+    methods: POST
+
+competitorDelete:
+    path: /delete/{id}
+    controller: App\Controller\Competitions\Competitors::delete
+    methods: GET
+    requirements:
+        id: \d+|-1    
+    defaults:
+        id: -1

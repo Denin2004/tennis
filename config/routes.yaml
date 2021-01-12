@@ -2,14 +2,18 @@ mainPage:
     path: /
     controller: App\Controller\MainPage::index
 
-admin: 
+admin:
     resource: routes/admin.yaml
     prefix: /admin
-    
-players: 
+
+players:
     resource: routes/players.yaml
     prefix: /players
 
-courts: 
+courts:
     resource: routes/courts.yaml
-    prefix: /courts    
+    prefix: /courts
+    
+competitions:
+    resource: routes/competitions/main.yaml
+    prefix: /competion

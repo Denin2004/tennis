@@ -1,5 +1,5 @@
 <?php
-namespace App\Controller\Courts;
+namespace App\Controller\Competitions;
 
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -7,40 +7,40 @@ use Symfony\Component\HttpFoundation\Request;
 use App\Controller\Common;
 use App\Services\FormTransformer;
 
-use App\Entity\Courts as CourtsEntity;
-use App\Form\Court;
+use App\Entity\Competitions\Competitors as CompetitorsEntity;
+use App\Form\Competitions\Competitor;
 
-class Main extends Common
+class Competitors extends Common
 {
-    public function courts(CourtsEntity $courtsDB)
+    public function competitors(CompetitorsEntity $competitorsDB, $competition_id)
     {
         return new JsonResponse([
             'success' => true,
-            'data' => $courtsDB->courts()
+            'data' => $competitorsDB->competitors(['competition_id' => $competition_id])
         ]);
     }
 
-    public function form(FormTransformer $transformer, CourtsEntity $courtsDB, $id)
+    public function form(FormTransformer $transformer, CompetitorsEntity $competitorsDB, $id)
     {
         $court = [
             'id' => $id,
         ];
         if ($id != -1) {
-            $court = $courtsDB->court($court);
+            $court = $competitorsDB->competitor($court);
             if (!$court) {
                 return new JsonResponse([
-                    'error' => 'court.errors.not_found'
+                    'error' => 'competition.errors.competitor_not_found'
                 ]);
             }
         }
-        $form = $this->createForm(Court::class, $court);
+        $form = $this->createForm(Competitor::class, $court);
         return new JsonResponse([
             'success' => true,
             'form' => $transformer->transform($form->createView())
         ]);
     }
 
-    public function post(Request $request, CourtsEntity $courtsDB)
+    public function post(Request $request, CompetitorsEntity $competitorsDB)
     {
         $formData = json_decode($request->getContent(), true);
         if ($formData == null) {
@@ -56,16 +56,16 @@ class Main extends Common
             ]);
         }
 
-        $res = $courtsDB->post($form->getData());
+        $res = $competitorsDB->post($form->getData());
         return new JsonResponse([
             'success' => true,
             'id' => $formData['id'] == -1 ? $res['id'] : false
         ]);
     }
 
-    public function delete(CourtsEntity $courtsDB, $id)
+    public function delete(CompetitorsEntity $competitorsDB, $id)
     {
-        $courtsDB->delete([
+        $competitorsDB->delete([
             'id' => $id,
         ]);
         return new JsonResponse([
