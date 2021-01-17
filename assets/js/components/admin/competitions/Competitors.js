@@ -4,7 +4,7 @@ import axios from 'axios';
 import i18n from '@app/i18app';
 import { withTranslation } from 'react-i18next';
 
-import { Table, message, Button, Form, Input, Space, Popconfirm } from 'antd';
+import { Table, message, Button, Form, Input, Space, Popconfirm, Row, Col } from 'antd';
 import { PlusOutlined, DeleteOutlined } from '@ant-design/icons';
 
 import MfwFormWidget from '@app/mfw/mfwForm/MfwFormWidget';
@@ -27,17 +27,82 @@ class Competitors extends Component {
             editCompetitor: 0,
             columns: [
                 {
-                    title: this.props.t('competition.competitor'),
+                    title: this.props.t('competition.competitor._'),
                     dataIndex: 'name',
                     render: (text, row) => {
-                        const editable = this.isEditing(row);
+                        const editable = this.isEditing(row),
+                            twoPlayers = [
+                                'competition.types.mensdouble',
+                                'competition.types.womensdouble',
+                                'competition.types.mixt'].includes(row.type);
                         return editable ? (
                             <React.Fragment>
-                                <MfwFormWidget element={this.state.form.elements.name} widgetProps={{className: 'mfw-margin-0'}}/>
+                                {twoPlayers == true ? 
+                                <Row gutter={16}>
+                                    <Col span={12}>
+                                        <MfwFormWidget
+                                           element={this.state.form.elements.player1}
+                                           autocompleteItemProps={{
+                                                className: 'mfw-margin-0'
+                                            }}
+                                           widgetProps={{
+                                               search: {
+                                                   url: window.MFW_APP_PROPS.urls.player.search,
+                                                   form: this.props.form
+                                               }
+                                           }}
+                                        />
+                                    </Col>
+                                    <Col span={12}>
+                                        <MfwFormWidget
+                                           element={this.state.form.elements.player2}
+                                           autocompleteItemProps={{
+                                                className: 'mfw-margin-0'
+                                            }}
+                                           widgetProps={{
+                                               search: {
+                                                   url: window.MFW_APP_PROPS.urls.player.search,
+                                                   form: this.props.form
+                                               }
+                                           }}
+                                        />
+                                    </Col>
+                                </Row>
+                                : 
+                                <React.Fragment>
+                                    <MfwFormWidget
+                                       element={this.state.form.elements.player1}
+                                        autocompleteItemProps={{
+                                             className: 'mfw-margin-0'
+                                         }}
+                                       widgetProps={{
+                                           search: {
+                                               url: window.MFW_APP_PROPS.urls.player.search,
+                                               form: this.props.form
+                                           }
+                                       }}
+                                    />
+                                    <MfwFormWidget
+                                       element={this.state.form.elements.player2}
+                                        autocompleteItemProps={{
+                                             hidden: true
+                                        }}
+                                       widgetProps={{
+                                           hidden: true,
+                                           search: {
+                                               url: window.MFW_APP_PROPS.urls.player.search,
+                                               method: 'get',
+                                               form: this.props.form
+                                           }
+                                       }}
+                                    />
+                                </React.Fragment>
+                                }
+                                <MfwFormWidget element={this.state.form.elements.competition_id}/>
                                 <MfwFormWidget element={this.state.form.elements.id}/>
                                 <MfwFormWidget element={this.state.form.elements._token}/>
-                            </React.Fragment>    
-                        ) : (<React.Fragment>{text}</React.Fragment>)
+                            </React.Fragment>
+                        ) : (<React.Fragment>{twoPlayers == true ? <Space size="middle"><span>{row.player1}</span><span>{row.player2}</span></Space>: row.player1}</React.Fragment>)
                     }
                 },
                 {
@@ -45,7 +110,7 @@ class Competitors extends Component {
                     dataIndex: 'actions',
                     render: (text, row) => {
                         const editable = this.isEditing(row);
-                        return editable ? 
+                        return editable ?
                             (<Space size="middle">
                                 <Button
                                   type="link"
@@ -57,7 +122,7 @@ class Competitors extends Component {
                                   onClick={this.cancelEdit}
                                   className="mfw-table-button-link">{this.props.t('actions.cancel')}
                                 </Button>
-                            </Space>) : 
+                            </Space>) :
                             (<Space size="middle">
                                 <Button
                                   type="link"
@@ -65,7 +130,7 @@ class Competitors extends Component {
                                   className="mfw-table-button-link">{this.props.t('actions.edit')}
                                 </Button>
                                 <Popconfirm
-                                  title={this.props.t('court.delete_confirm')}
+                                  title={this.props.t('competition.competitor.delete_confirm')}
                                   onConfirm={() => this.delete(row.id)}
                                   okText={this.props.t('confirm.yes')}
                                   cancelText={this.props.t('confirm.no')}>
@@ -96,7 +161,7 @@ class Competitors extends Component {
     }
 
     list() {
-        axios.get(window.MFW_APP_PROPS.urls.competitions.competitors.list+'/'+this.props.competition_id).then(res => {
+        axios.get(window.MFW_APP_PROPS.urls.competition.competitor.list+'/'+this.props.competition_id).then(res => {
             if (res.data.success) {
                 this.setState({
                     loading: false,
@@ -117,11 +182,13 @@ class Competitors extends Component {
     }
 
     newRow() {
-        this.editRow(-1);
+        if (this.state.editCompetitor != -1) {
+            this.editRow(-1);
+        }
     }
 
     editRow(id) {
-        axios.get(window.MFW_APP_PROPS.urls.competitions.competitors.form+'/'+id).then(res => {
+        axios.get(window.MFW_APP_PROPS.urls.competition.competitor.form+'/'+this.props.competition_id+'/'+id).then(res => {
             if (res.data.success) {
                 this.props.form.resetFields();
                 this.setState( state => {
@@ -130,8 +197,7 @@ class Competitors extends Component {
                         columns[0].sortOrder = 'ascend';
                         data = [{
                             id: -1,
-                            name: '',
-                            address: ''
+                            type: res.data.form.elements.competition_type.widgetProps.initialValue
                         }, ...state.data];
                     }
                     return {
@@ -159,7 +225,7 @@ class Competitors extends Component {
             .then(values => {
                 axios({
                     method: this.state.form.method,
-                    url: window.MFW_APP_PROPS.urls.competitions.competitors.post,
+                    url: window.MFW_APP_PROPS.urls.competition.competitor.post,
                     data: values,
                     headers: {'Content-Type': 'application/json'}
                 }).then(res => {
@@ -170,11 +236,20 @@ class Competitors extends Component {
                             this.list();
                             return;
                         }
-                        Object.keys(values).map(key => {
-                            if (data[postRowIndex][key] != undefined) {
-                                data[postRowIndex][key] = values[key];
-                            }
-                        })
+                        if (values.player1) {
+                            data[postRowIndex].player1 = values.player1.value != '' ? values.player1.search : '';
+                            data[postRowIndex].player1_id = values.player1.value != '' ? values.player1.value : '';
+                        } else {
+                            data[postRowIndex].player1 = '';
+                            data[postRowIndex].player1_id = '';
+                        }
+                        if (values.player2) {
+                            data[postRowIndex].player2 = values.player2.value != '' ? values.player2.search : '';
+                            data[postRowIndex].player2_id = values.player2.value != '' ? values.player2.value : '';
+                        } else {
+                            data[postRowIndex].player2 = '';
+                            data[postRowIndex].player2_id = '';
+                        }
                         if (values.id/1 == -1) {
                             data[postRowIndex].id = res.data.id/1;
                         }
@@ -195,7 +270,7 @@ class Competitors extends Component {
     }
 
     delete(id) {
-        axios.get(window.MFW_APP_PROPS.urls.competitions.competitors.delete+'/'+id).then(res => {
+        axios.get(window.MFW_APP_PROPS.urls.competition.competitor.delete+'/'+id).then(res => {
             if (res.data.success) {
                 var {data} = this.state;
                 const deleteRowIndex = this.state.data.findIndex(function(element){return element.id === id});
@@ -239,7 +314,7 @@ class Competitors extends Component {
             columns: [...columns]
         });
     }
-    
+
     render() {
         return (
             <React.Fragment>

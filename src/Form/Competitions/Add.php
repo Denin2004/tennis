@@ -7,11 +7,10 @@ use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\HiddenType;
 
 use App\Entity\Courts;
-use App\Form\MfwPeriodType;
+use App\Form\Types\MfwPeriodType;
 
 class Add extends AbstractType
 {
-
     private $courts;
 
     public function __construct(Courts $courts)

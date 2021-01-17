@@ -30,7 +30,7 @@ competitionDelete:
         id: \d+|-1    
     defaults:
         id: -1
-        
+    
 competitors:
-    resource: routes/competitions/competitors.yaml
-    prefix: /competitor
+    resource: competitors.yaml
+    prefix: /competitor            

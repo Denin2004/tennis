@@ -11,4 +11,14 @@ class Entity
     {
         $this->provider = $provider;
     }
+
+    public function isError()
+    {
+        return $this->provider->isError();
+    }
+
+    public function getError()
+    {
+        return $this->provider->getError();
+    }
 }

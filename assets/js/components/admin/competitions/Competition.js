@@ -20,7 +20,7 @@ class Competition extends Component {
                     <Tabs.TabPane tab={this.props.t('competition.stages_and_results')} key="1">
                       Content of Tab Pane 3
                     </Tabs.TabPane>
-                    <Tabs.TabPane tab={this.props.t('competition.competitiors')} key="2">
+                    <Tabs.TabPane tab={this.props.t('competition.competitor.competitors')} key="2">
                         <Competitors competition_id={this.props.match.params.id}/>
                     </Tabs.TabPane>
                     <Tabs.TabPane tab={this.props.t('competition.main')} key="3">

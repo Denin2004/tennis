@@ -11,24 +11,25 @@ class MfwPeriod extends Component {
         var rangeProps = {
             format: props.element.widgetProps.showTime ? window.MFW_APP_PROPS.formats.datetime : 
                 window.MFW_APP_PROPS.formats.date
-        }
-        if (props.element.widgetProps.showTime) {
-            rangeProps.showTime = props.element.widgetProps.showTime;
-            if (props.element.widgetProps.disableTime) {
+        },
+        widgetProps = this.props.element.widgetProps ? 
+            (this.props.widgetProps ? {...this.props.element.widgetProps, ...this.props.widgetProps} : this.props.element.widgetProps) : 
+            (this.props.widgetProps ? this.props.widgetProps : {});
+        if (widgetProps.showTime) {
+            rangeProps.showTime = widgetProps.showTime;
+            if (widgetProps.disableTime) {
                 rangeProps.disabledTime = this.disabledTime;
                 rangeProps.showTime = {hideDisabledOptions: true};
             }
         }
-        if (props.element.widgetProps.rangeProps.defaultValue != undefined) {
+        if (widgetProps.rangeProps &&(widgetProps.rangeProps.defaultValue != undefined)) {
             rangeProps.defaultValue = [];
-            props.element.widgetProps.rangeProps.defaultValue.map(function(value) {
+            widgetProps.rangeProps.defaultValue.map(function(value) {
                 rangeProps.defaultValue.push(moment(value, rangeProps.format));
             });
         }
         this.state = {
-            widgetProps : this.props.element.widgetProps ? 
-            (this.props.element.widgetProps ? {...this.props.element.widgetProps, ...this.props.element.widgetProps} : this.props.element.widgetProps) : 
-            (this.props.element.widgetProps ? this.props.element.widgetProps : {}),
+            widgetProps : widgetProps,
             rangeProps: rangeProps
         }
     }

@@ -68,9 +68,13 @@ services:
         class: App\Form\Competitions\Add
         arguments: ['@App\Entity\Courts']
         
-    App\Form\PeriodType:
-        class: App\Form\PeriodType
+    App\Form\Types\MfwPeriodType:
+        class: App\Form\Types\MfwPeriodType
         arguments: ['@App\Services\SiteConfig']
+        tags: [form.type]
+
+    App\Form\Types\MfwAutocompleteType:
+        class: App\Form\Types\MfwAutocompleteType
         tags: [form.type]
         
     App\Services\SiteConfig:

@@ -16,4 +16,4 @@ courts:
     
 competitions:
     resource: routes/competitions/main.yaml
-    prefix: /competion
+    prefix: /competition

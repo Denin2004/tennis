@@ -14,6 +14,7 @@ class DbProvider
     protected $timeFormat;
     protected $dateTimeFormat;
     protected $token;
+    protected $error;
 
     public function __construct(Connection $db, TokenStorageInterface $token, SiteConfig $siteConfig)
     {
@@ -21,6 +22,7 @@ class DbProvider
         $this->token = $token;
         $this->dateFormat = $siteConfig->get('db_date_format');
         $this->timeFormat = $siteConfig->get('db_time_format');
+        $this->error = '';
     }
 
     public function db()
@@ -50,13 +52,34 @@ class DbProvider
 
     public function executeQuery($sql, $params = [])
     {
-        $res = 'Ok';
+        $this->error = '';
         try {
             $this->db->executeQuery($sql, $params);
         } catch (\Doctrine\DBAL\DBALException $ex) {
             $err = explode('ERROR:', $ex->getPrevious()->getMessage());
-            $res = str_replace(' ', '', explode("\n", $err[count($err)-1])[0]);
+            $this->error = str_replace(' ', '', explode("\n", $err[count($err)-1])[0]);
+        }
+    }
+
+    public function fetchAll($sql, $params = [])
+    {
+        $this->error = '';
+        try {
+            $res = $this->db->fetchAll($sql, $params);
+        } catch (\Doctrine\DBAL\DBALException $ex) {
+            $err = explode('ERROR:', $ex->getPrevious()->getMessage());
+            $this->error = str_replace(' ', '', explode("\n", $err[count($err)-1])[0]);
         }
         return $res;
+    }
+
+    public function isError()
+    {
+        return $this->error != '';
+    }
+
+    public function getError()
+    {
+        return $this->error;
     }
 }

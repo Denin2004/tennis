@@ -3,7 +3,8 @@ urls: {
         list: "{{ path('playersList')}}",
         form: "{{ path('playerForm') }}",
         post: "{{ path('playerPost') }}",
-        delete: "{{ path('playerDelete') }}"
+        delete: "{{ path('playerDelete') }}",
+        search: "{{ path('playerSearch') }}"
     },
     court: {
         list: "{{ path('courtsList')}}",
@@ -17,10 +18,11 @@ urls: {
         edit: "{{ path('competitionEdit') }}",
         post: "{{ path('competitionPost') }}",
         delete: "{{ path('competitionDelete') }}",
-        competitors: {
+        competitor: {
             list: "{{ path('competitorsList')}}",
-            edit: "{{ path('competitorForm') }}",
-            post: "{{ path('competitorPost') }}"
+            form: "{{ path('competitorForm') }}",
+            post: "{{ path('competitorPost') }}",
+            delete: "{{ path('competitorDelete') }}"
         }
     }
 }

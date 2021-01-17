@@ -72,4 +72,13 @@ class Main extends Common
             'success' => true
         ]);
     }
+
+    public function search(PlayersEntity $playersDB, $text)
+    {
+        $res = $playersDB->search(urldecode($text));
+        return new JsonResponse([
+            'success' => true,
+            'data' => $res
+        ]);
+    }
 }

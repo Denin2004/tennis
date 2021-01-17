@@ -6,6 +6,7 @@ import { withTranslation } from 'react-i18next';
 import { Form, Input, Button, Select} from 'antd';
 
 import MfwPeriod from '@app/mfw/mfwForm/MfwPeriod';
+import MfwAutocomplete from '@app/mfw/mfwForm/MfwAutocomplete';
 
 class MfwFormWidget extends Component {
     constructor(props){
@@ -14,7 +15,7 @@ class MfwFormWidget extends Component {
         this.hiddenElement = this.hiddenElement.bind(this);
         this.buttonElement = this.buttonElement.bind(this);
         this.periodElement = this.periodElement.bind(this);
-
+        this.autocompleteElement = this.autocompleteElement.bind(this);
         this.state = {
             widgetProps : this.props.widgetProps ? 
             (this.props.element.widgetProps ? {...this.props.element.widgetProps, ...this.props.widgetProps} : this.props.widgetProps) : 
@@ -33,16 +34,22 @@ class MfwFormWidget extends Component {
     hiddenElement() {
         return (
             <Form.Item hidden={true} {...this.state.widgetProps}>
-                <input type="hidden"/>
+                <Input type="hidden"/>
             </Form.Item>
         );
     };
     
     periodElement() {
         return (
-            <MfwPeriod element={this.props.element}/>
+            <MfwPeriod {...this.props}/>
         );
     }
+    
+    autocompleteElement() {
+        return (
+            <MfwAutocomplete {...this.props}/>
+        );
+    }    
 
     choiceElement() {
         return (

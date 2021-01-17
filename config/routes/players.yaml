@@ -25,3 +25,11 @@ playerDelete:
         id: \d+|-1    
     defaults:
         id: -1
+
+playerSearch:
+    path: /search/{text}
+    controller: App\Controller\Players\Main::search
+    methods: GET
+    defaults:
+        text: ''
+    
