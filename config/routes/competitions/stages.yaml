@@ -1,0 +1,45 @@
+stagesList:
+    path: /list/{competition_id}
+    controller: App\Controller\Competitions\Stages::stages
+    methods: GET
+    requirements:
+        competition_id: \d+|-1
+    defaults:
+        competition_id: -1
+
+stageAddForm:
+    path: /add/form/{competition_id}
+    controller: App\Controller\Competitions\Stages::addForm
+    methods: GET
+    requirements:
+        competition_id: \d+|-1
+    defaults:
+        competition_id: -1
+        
+stageEditForm:
+    path: /edit.form/{id}
+    controller: App\Controller\Competitions\Stages::editForm
+    methods: GET
+    requirements:
+        id: \d+|-1
+    defaults:
+        id: -1
+
+stageCreate:
+    path: /create
+    controller: App\Controller\Competitions\Stages::create
+    methods: POST
+
+stagePost:
+    path: /post
+    controller: App\Controller\Competitions\Stages::post
+    methods: POST
+
+stageDelete:
+    path: /delete/{id}
+    controller: App\Controller\Competitions\Stages::delete
+    methods: GET
+    requirements:
+        id: \d+|-1    
+    defaults:
+        id: -1
