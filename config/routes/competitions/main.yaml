@@ -7,13 +7,13 @@ competitionAddForm:
     path: /form/add
     controller: App\Controller\Competitions\Main::addForm
     methods: GET
-    
+
 competitionEdit:
     path: /edit/{id}
     controller: App\Controller\Competitions\Main::edit
     methods: GET
     requirements:
-        id: \d+|-1    
+        id: \d+|-1
     defaults:
         id: -1
 
@@ -21,16 +21,20 @@ competitionPost:
     path: /post
     controller: App\Controller\Competitions\Main::post
     methods: POST
-    
+
 competitionDelete:
     path: /delete/{id}
     controller: App\Controller\Competitions\Main::delete
     methods: GET
     requirements:
-        id: \d+|-1    
+        id: \d+|-1
     defaults:
         id: -1
-    
+
 competitors:
     resource: competitors.yaml
-    prefix: /competitor            
+    prefix: /competitor
+
+stages:
+    resource: stages.yaml
+    prefix: /stage

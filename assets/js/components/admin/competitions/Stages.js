@@ -5,6 +5,8 @@ import { PlusOutlined } from '@ant-design/icons';
 
 import i18n from '@app/i18app';
 import { withTranslation } from 'react-i18next';
+import axios from 'axios';
+
 import useWithForm from '@app/mfw/mfwForm/MfwFormHOC';
 
 class Stages extends Component {
