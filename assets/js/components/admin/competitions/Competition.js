@@ -17,7 +17,7 @@ class Competition extends Component {
         return (
             <div className="mfw-site-layout">
                 <Tabs defaultActiveKey="1">
-                    <Tabs.TabPane tab={this.props.t('competition.stages_and_results')} key="1">
+                    <Tabs.TabPane tab={this.props.t('competition.stage.and_results')} key="1">
                         <Stages competition_id={this.props.match.params.id}/>
                     </Tabs.TabPane>
                     <Tabs.TabPane tab={this.props.t('competition.competitor.competitors')} key="2">

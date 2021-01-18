@@ -16,6 +16,14 @@
     margin: 0 !important;
 }
 
+.mfw-margin-right-1 {
+    margin-right: 8px;
+}
+
+.mfw-margin-right-2 {
+    margin-right: 16px;
+}
+
 .mfw-site-layout {
     background: white;
     padding: 24px;

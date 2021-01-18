@@ -8,15 +8,9 @@ class Stages extends Entity
     public function stages($params)
     {
         return $this->provider->fetchAll(
-            'select competitors.id, competitions.type,
-                competitors.player1_id, player1.name player1,
-                competitors.player2_id, player1.name player2,
-                competitions.id as competition_id
-            from competitions.competitors competitors
-                left join competitions.competitions competitions on (competitions.id=competitors.competition_id)
-                left join players.players player1 on (player1.id=competitors.player1_id)
-                left join players.players player2 on (player2.id=competitors.player2_id)
-            where (competitors.competition_id=:competition_id)',
+            'select stages.id, stages.name, stages.type
+            from competitions.stages stages
+            where (stages.competition_id=:competition_id)',
             $params
         );
     }

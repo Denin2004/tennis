@@ -6,8 +6,8 @@ use Symfony\Component\HttpFoundation\Request;
 
 use App\Controller\Common;
 use App\Services\FormTransformer;
-
 use App\Entity\Competitions\Stages as StagesEntity;
+use App\Form\Competitions\Stages\Add;
 
 class Stages extends Common
 {
@@ -15,27 +15,15 @@ class Stages extends Common
     {
         return new JsonResponse([
             'success' => true,
-            'data' => $stagesDB->stages(['competition_id' => $competition_id])
+            'stages' => $stagesDB->stages(['competition_id' => $competition_id])
         ]);
     }
 
-    public function form(FormTransformer $transformer, StagesEntity $stagesDB, CompetitionsEntity $competitionsDB, $competition_id, $id)
+    public function addForm(FormTransformer $transformer, $competition_id)
     {
-        $competitor = [
-            'id' => $id,
+        $form = $this->createForm(Add::class, [
             'competition_id' => $competition_id
-        ];
-        if ($id != -1) {
-            $competitor = $stagesDB->competitor($competitor);
-            if (!$competitor) {
-                return new JsonResponse([
-                    'error' => 'competition.errors.competitor_not_found'
-                ]);
-            }
-        } else {
-            $competitor['competition_type'] = $competitionsDB->type($competition_id);
-        }
-        $form = $this->createForm(Competitor::class, $competitor);
+        ]);
         return new JsonResponse([
             'success' => true,
             'form' => $transformer->transform($form->createView())

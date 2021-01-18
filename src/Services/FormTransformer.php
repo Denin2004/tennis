@@ -39,7 +39,8 @@ class FormTransformer
                 'name' => $element->vars['name']
             ],
             'id' => $element->vars['id'],
-            'type' => array_pop($cache_key)
+            'type' => array_pop($cache_key),
+            'attr' => $element->vars['attr']
         ];
         if (isset($element->vars['choices'])) {
             $res['multiple'] = $element->vars['multiple'];
