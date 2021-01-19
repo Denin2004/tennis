@@ -12,8 +12,15 @@ class MfwForm extends Component {
         super(props);
         this.closeError = this.closeError.bind(this);
         this.finish = this.finish.bind(this);
-    }    
-    
+        var parsed = this.props.parsed ? this.props.parsed : [];
+        React.Children.toArray(this.props.children).map((child) => {
+            this.findWidget(child, parsed);
+        });
+        this.state = {
+            parsed: parsed
+        }
+    }
+
     closeError() {
         this.setState({error: ''});
     }
@@ -32,8 +39,8 @@ class MfwForm extends Component {
         }).catch(error => {
             message.error(error.toString());
         });
-    }    
-    
+    }
+
     findWidget(child, parsed) {
         const children = React.Children.toArray(child.props ? (child.props.children ? child.props.children : []) : []);
         if ((child.props)&&(child.props.element)&&(child.props.element.id)) {
@@ -43,22 +50,18 @@ class MfwForm extends Component {
             this.findWidget(ch, parsed);
         });
     }
-    
+
     render() {
-        var parsed = [];
-        React.Children.toArray(this.props.children).map((child) => {
-            this.findWidget(child, parsed);
-        });
         return (
             <Form {...this.props.formProps} onFinish={this.finish}>
-                {this.props.children} 
+                {this.props.children}
                 {Object.keys(this.props.mfwForm.elements).map(key => {
-                    if (parsed.indexOf(this.props.mfwForm.elements[key].id) === -1) { 
+                    if (this.state.parsed.indexOf(this.props.mfwForm.elements[key].id) === -1) {
                         return (
                             <MfwFormWidget key={key} element={this.props.mfwForm.elements[key]}/>
                         )
                     }
-                })}   
+                })}
             </Form>
         )
     }

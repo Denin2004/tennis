@@ -16,16 +16,18 @@ class MfwFormWidget extends Component {
         this.buttonElement = this.buttonElement.bind(this);
         this.periodElement = this.periodElement.bind(this);
         this.autocompleteElement = this.autocompleteElement.bind(this);
-        this.state = {
-            widgetProps : this.props.widgetProps ? 
+        this.widgetProps = this.widgetProps.bind(this);
+    }
+    
+    widgetProps() {
+        return this.props.widgetProps ? 
             (this.props.element.widgetProps ? {...this.props.element.widgetProps, ...this.props.widgetProps} : this.props.widgetProps) : 
-            (this.props.element.widgetProps ? this.props.element.widgetProps : {})
-        }
+            (this.props.element.widgetProps ? this.props.element.widgetProps : {});
     }
 
     textElement() {
         return (
-            <Form.Item {...this.state.widgetProps}>
+            <Form.Item {...this.widgetProps()}>
                 <Input/>
             </Form.Item>
         );
@@ -33,7 +35,7 @@ class MfwFormWidget extends Component {
 
     hiddenElement() {
         return (
-            <Form.Item hidden={true} {...this.state.widgetProps}>
+            <Form.Item hidden={true} {...this.widgetProps()}>
                 <Input type="hidden"/>
             </Form.Item>
         );
@@ -52,12 +54,13 @@ class MfwFormWidget extends Component {
     }    
 
     choiceElement() {
+        const widgetProps = this.widgetProps();
         return (
-            <Form.Item {...this.state.widgetProps}>
+            <Form.Item {...widgetProps}>
                 <Select>
                     {this.props.element.choices.map((choice) => {
                         return(
-                      <Select.Option key={choice.value} value={choice.value}>{this.state.widgetProps.translate == 'true' ? 
+                      <Select.Option key={choice.value} value={choice.value}>{widgetProps.translate == 'true' ? 
                          this.props.t(choice.label) : choice.label}</Select.Option>
                     )})}
                 </Select>
@@ -67,7 +70,7 @@ class MfwFormWidget extends Component {
 
     buttonElement() {
         return (
-            <Form.Item {...this.state.widgetProps}>
+            <Form.Item {...this.widgetProps()}>
                 <Button htmlType="submit" {...this.props.element.buttonProps}>{this.props.element.title}</Button>
             </Form.Item>
         );

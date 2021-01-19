@@ -17,6 +17,13 @@ class Stages extends Component {
         this.addForm = this.addForm.bind(this);
         this.post = this.post.bind(this);
         this.closeModal = this.closeModal.bind(this);
+        this.labels = {
+            name: 'common.name',
+            type: 'competition.stage.type',
+            group_players: 'competition.competitor.count',
+            group_count: 'competition.stage.group_count',
+            place2place_places: 'competition.stage.place_count'
+        }
         this.state = {
             stages: [],
             modal: false,
@@ -47,11 +54,18 @@ class Stages extends Component {
             if (res.data.success) {
                 res.data.form.action = window.MFW_APP_PROPS.urls.competition.stage.create;
                 this.props.form.resetFields();
-                console.log(res.data.form);
+                const parsed = [];
+                Object.keys(res.data.form.elements).map(key => {
+                    res.data.form.elements[key].widgetProps.label = this.props.t(this.labels[key]);
+                    if ((res.data.form.elements[key].attr)&&(res.data.form.elements[key].attr.class)) {
+                        parsed.push(res.data.form.elements[key].id);
+                    }
+                });
                 this.setState({
                     form: res.data.form,
                     modal: true,
-                    editStage: -1
+                    editStage: -1,
+                    parsed: parsed
                 });
             } else {
                 message.error(this.props.t(res.data.error));
@@ -119,16 +133,22 @@ class Stages extends Component {
                                labelCol: { span: 8 },
                                wrapperCol: { span: 16 }
                            }}
+                           parsed={[...this.state.parsed]}
                            mfwForm={this.state.form}
                            success={this.list}>
                             <MfwFormWidget element={this.state.form.elements.name}/>
                             <MfwFormWidget element={this.state.form.elements.type}/>
                             <Form.Item noStyle shouldUpdate={(prevValues, curValues) => prevValues.type !== curValues.type}>
-                            {(form) => { 
-                                console.log(form.getFieldValue('type'));
-                                return(
-                                        <div></div>
-                                )}}
+                            {(form) => {
+                                const showType = form.getFieldValue('type');
+                                return <React.Fragment>
+                                    {Object.keys(this.state.form.elements).map(key => {
+                                        if (this.state.parsed.indexOf(this.state.form.elements[key].id) != -1) {
+                                            return <MfwFormWidget key={key} element={this.state.form.elements[key]} widgetProps={{hidden: this.state.form.elements[key].attr.class != showType}}/>
+                                        }
+                                    })}
+                                </React.Fragment>
+                            }}
                             </Form.Item>
                         </MfwForm>
                     </Modal> : ''

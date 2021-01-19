@@ -20,15 +20,12 @@ class Config extends AbstractType
 
     protected function groupConfig(FormBuilderInterface $builder, array $options)
     {
-        $builder->add('name', TextType::class)
-            ->add('group_players', TextType::class, ['attr' => ['class' => 'group']])
+        $builder->add('group_players', TextType::class, ['attr' => ['class' => 'group']])
             ->add('group_count', TextType::class, ['attr' => ['class' => 'group']]);
     }
 
-    protected function testConfig(FormBuilderInterface $builder, array $options)
+    protected function place2placeConfig(FormBuilderInterface $builder, array $options)
     {
-        $builder->add('name', TextType::class)
-            ->add('test_players', TextType::class, ['attr' => ['class' => 'test']])
-            ->add('test_count', TextType::class, ['attr' => ['class' => 'test']]);
+        $builder->add('place2place_places', TextType::class, ['attr' => ['class' => 'place2place']]);
     }
 }
