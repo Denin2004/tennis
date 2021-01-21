@@ -1,10 +1,21 @@
 <?php
 namespace App\Entity\Competitions;
 
+use App\Services\DbProvider;
 use App\Entity\Entity;
+use App\Services\Stages as StagesService;
 
 class Stages extends Entity
 {
+
+    protected $stages;
+
+    public function __construct(DbProvider $provider, StagesService $stages)
+    {
+        parent::__construct($provider);
+        $this->stages = $stages;
+    }
+
     public function stages($params)
     {
         return $this->provider->fetchAll(
@@ -15,15 +26,15 @@ class Stages extends Entity
         );
     }
 
+    public function create($params)
+    {
+        $params['data'] = $this->stages->configDB($params);
+        $this->provider->executeQuery('insert into competitions.stages (competition_id, name, type, data)values(:competition_id, :name, :type, :data)', $params)[0];
+    }
+
     public function post($params)
     {
-        $params['player1'] = $params['player1']['value'];
-        $params['player2'] = $params['player2']['value'];
-        if ($params['id'] == -1) {
-            return $this->provider->fetchAll('insert into competitions.competitors (competition_id, player1_id, player2_id)values(:competition_id, :player1, :player2) returning id', $params)[0];
-        } else {
-            $this->provider->executeQuery('update competitions.competitors set player1_id=:player1, player2_id=:player2  where id=:id', $params);
-        }
+         $this->provider->executeQuery('update competitions.competitors set player1_id=:player1, player2_id=:player2  where id=:id', $params);
     }
 
     public function competitor($params)

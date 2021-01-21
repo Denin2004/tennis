@@ -7,8 +7,8 @@ stagesList:
     defaults:
         competition_id: -1
 
-stageAddForm:
-    path: /add/form/{competition_id}
+stageCreateForm:
+    path: /create/form/{competition_id}
     controller: App\Controller\Competitions\Stages::addForm
     methods: GET
     requirements:

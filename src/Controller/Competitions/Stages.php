@@ -7,7 +7,7 @@ use Symfony\Component\HttpFoundation\Request;
 use App\Controller\Common;
 use App\Services\FormTransformer;
 use App\Entity\Competitions\Stages as StagesEntity;
-use App\Form\Competitions\Stages\Add;
+use App\Form\Competitions\Stages\Create;
 
 class Stages extends Common
 {
@@ -21,12 +21,42 @@ class Stages extends Common
 
     public function addForm(FormTransformer $transformer, $competition_id)
     {
-        $form = $this->createForm(Add::class, [
+        $form = $this->createForm(Create::class, [
             'competition_id' => $competition_id
         ]);
         return new JsonResponse([
             'success' => true,
             'form' => $transformer->transform($form->createView())
+        ]);
+    }
+
+    public function create(Request $request, StagesEntity $stagesDB)
+    {
+        $formData = json_decode($request->getContent(), true);
+        if ($formData == null) {
+            return new JsonResponse([
+                'error' => 'common.errors.formData'
+            ]);
+        }
+        $form = $this->createForm(Create::class);
+        $form->submit($formData);
+        if (!$form->isValid()) {
+            return new JsonResponse([
+                'error' => $this->formErrors($form)
+            ]);
+        }
+
+        $stagesDB->create($form->getData());
+        if ($stagesDB->isError()) {
+            return new JsonResponse([
+                'success' => false,
+                'error' => $stagesDB->getError()
+            ]);
+        }
+        return $this->stages($stagesDB, $formData['competition_id']);
+        return new JsonResponse([
+            'success' => true,
+            'id' => $formData['id'] == -1 ? $res['id'] : false
         ]);
     }
 

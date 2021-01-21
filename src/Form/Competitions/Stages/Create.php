@@ -7,10 +7,18 @@ use Symfony\Component\Form\Extension\Core\Type\HiddenType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 
-use App\Form\Competitions\Stages\Config;
+use App\Services\Stages;
 
-class Add extends Config
+class Create extends AbstractType
 {
+
+    protected $stages;
+
+    public function __construct(Stages $stages)
+    {
+        $this->stages = $stages;
+    }
+
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder->add('competition_id', HiddenType::class)
@@ -19,15 +27,12 @@ class Add extends Config
                 'type',
                 ChoiceType::class,
                 [
-                    'choices' => $this->stageTypes,
+                    'choices' => $this->stages->choices(),
                     'expanded' => false,
                     'multiple' => false,
                     'data' => 'group'
                 ]
             );
-        foreach ($this->stageTypes as $groupType) {
-            $method = $groupType.'Config';
-            $this->$method($builder, $options);
-        }
+        $this->stages->buildForm($builder, $options, 'all');
     }
 }

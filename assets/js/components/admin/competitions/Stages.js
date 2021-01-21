@@ -14,8 +14,9 @@ class Stages extends Component {
     constructor(props){
         super(props);
         this.stages = this.stages.bind(this);
-        this.addForm = this.addForm.bind(this);
+        this.createForm = this.createForm.bind(this);
         this.post = this.post.bind(this);
+        this.create = this.create.bind(this);
         this.closeModal = this.closeModal.bind(this);
         this.labels = {
             name: 'common.name',
@@ -26,7 +27,7 @@ class Stages extends Component {
         }
         this.state = {
             stages: [],
-            modal: false,
+            createModal: false,
             editStage: 0
         }
     }
@@ -49,11 +50,11 @@ class Stages extends Component {
         });
     }
     
-    addForm() {
-        axios.get(window.MFW_APP_PROPS.urls.competition.stage.addForm+'/'+this.props.competition_id).then(res => {
+    createForm() {
+        axios.get(window.MFW_APP_PROPS.urls.competition.stage.createForm+'/'+this.props.competition_id).then(res => {
             if (res.data.success) {
                 res.data.form.action = window.MFW_APP_PROPS.urls.competition.stage.create;
-                this.props.form.resetFields();
+                //this.props.form.resetFields();
                 const parsed = [];
                 Object.keys(res.data.form.elements).map(key => {
                     res.data.form.elements[key].widgetProps.label = this.props.t(this.labels[key]);
@@ -63,7 +64,7 @@ class Stages extends Component {
                 });
                 this.setState({
                     form: res.data.form,
-                    modal: true,
+                    createModal: true,
                     editStage: -1,
                     parsed: parsed
                 });
@@ -76,6 +77,34 @@ class Stages extends Component {
             this.setState({modal: false});
         });
     }
+    
+    create() {
+        this.props.form
+            .validateFields()
+            .then(values => {
+                axios({
+                    method: this.state.form.method,
+                    url: window.MFW_APP_PROPS.urls.competition.stage.create,
+                    data: values,
+                    headers: {'Content-Type': 'application/json'}
+                }).then(res => {
+                    if (res.data.success) {
+                        this.setState({
+                            stages: res.data.stages,
+                        });                        
+                    } else {
+                        message.error(this.props.t(res.data.error));
+                    }
+                }).catch(error => {
+                    message.error(error.toString());
+                });
+                this.setState({createModal: false});
+            })
+            .catch(info => {
+                message.error(this.props.t('common.errors.validate'));
+            });
+        this.setState({createModal: false});
+    }    
 
     post() {
         this.props.form
@@ -105,13 +134,13 @@ class Stages extends Component {
     }
 
     closeModal() {
-        this.setState({modal: false});
+        this.setState({createModal: false});
     }
 
     render() {
         return (
             <React.Fragment>
-                <Tabs tabBarExtraContent={{left: <Button className="mfw-margin-right-2" onClick={this.addForm}>{this.props.t('competition.stage.create')}</Button>}}>
+                <Tabs tabBarExtraContent={{left: <Button className="mfw-margin-right-2" onClick={this.createForm}>{this.props.t('competition.stage.create')}</Button>}}>
                     {
                       this.state.stages.map(stage => {
                             return <Tabs.TabPane tab={stage.name} key={stage.id}>
@@ -120,11 +149,11 @@ class Stages extends Component {
                       })
                     }
                 </Tabs>
-                {this.state.modal == true ?
+                {this.state.createModal == true ?
                     <Modal
-                      title={this.props.t(this.state.editStage == -1 ? 'player.new' : 'player.edit') }
-                      visible={this.state.modal}
-                      onOk={this.post}
+                      title={this.props.t('competition.stage.create') }
+                      visible={this.state.createModal}
+                      onOk={this.create}
                       onCancel={this.closeModal}>
                         <MfwForm
                            formProps={{

@@ -51,11 +51,6 @@ services:
     app.dbprovider:
         class: App\Services\DbProvider
         arguments: ['@db_connection', '@security.token_storage', '@App\Services\SiteConfig']
-
-    app.common.controller:
-        class: App\Controller\Common
-        arguments: ['@translator']
-        public: false
         
     App\Entity\Entity:
         class: App\Entity\Entity
@@ -77,8 +72,8 @@ services:
         class: App\Form\Types\MfwAutocompleteType
         tags: [form.type]
         
-    App\Form\Competitions\Stages\Config:
-        class: App\Form\Competitions\Stages\Config
+    App\Services\Stages:
+        class: App\Services\Stages
         arguments: ['@App\Services\SiteConfig']
         
     App\Services\SiteConfig:
