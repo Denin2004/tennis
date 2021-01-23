@@ -9,19 +9,20 @@ import axios from 'axios';
 import useWithForm from '@app/mfw/mfwForm/MfwFormHOC';
 import MfwForm from '@app/mfw/mfwForm/MfwForm';
 import MfwFormWidget from '@app/mfw/mfwForm/MfwFormWidget';
+import StageGroup from '@app/components/admin/competitions/StageGroup';
+import StagePlace2Place from '@app/components/admin/competitions/StagePlace2Place';
 
 class Stages extends Component {
     constructor(props){
         super(props);
         this.stages = this.stages.bind(this);
         this.createForm = this.createForm.bind(this);
-        this.post = this.post.bind(this);
         this.create = this.create.bind(this);
         this.closeModal = this.closeModal.bind(this);
         this.labels = {
             name: 'common.name',
             type: 'competition.stage.type',
-            group_players: 'competition.competitor.count',
+            group_players: 'competition.stage.group_competitors',
             group_count: 'competition.stage.group_count',
             place2place_places: 'competition.stage.place_count'
         }
@@ -40,7 +41,7 @@ class Stages extends Component {
         axios.get(window.MFW_APP_PROPS.urls.competition.stage.list+'/'+this.props.competition_id).then(res => {
             if (res.data.success) {
                 this.setState({
-                    stages: res.data.stages,
+                    stages: res.data.stages
                 });
             } else {
                 message.error(this.props.t(res.data.error));
@@ -90,7 +91,7 @@ class Stages extends Component {
                 }).then(res => {
                     if (res.data.success) {
                         this.setState({
-                            stages: res.data.stages,
+                            stages: res.data.stages
                         });                        
                     } else {
                         message.error(this.props.t(res.data.error));
@@ -106,35 +107,17 @@ class Stages extends Component {
         this.setState({createModal: false});
     }    
 
-    post() {
-        this.props.form
-            .validateFields()
-            .then(values => {
-                console.log(values);
-/*                axios({
-                    method: this.state.form.method,
-                    url: window.MFW_APP_PROPS.urls.player.post,
-                    data: values,
-                    headers: {'Content-Type': 'application/json'}
-                }).then(res => {
-                    if (res.data.success) {
-                        this.list();
-                    } else {
-                        message.error(this.props.t(res.data.error));
-                    }
-                }).catch(error => {
-                    message.error(error.toString());
-                });*/
-                this.setState({modal: false});
-            })
-            .catch(info => {
-                message.error(this.props.t('common.errors.validate'));
-            });
-        this.setState({modal: false});
-    }
-
     closeModal() {
         this.setState({createModal: false});
+    }
+
+    stageBody(stage) {
+        switch(stage.type) {
+            case 'group':
+                return <StageGroup id={stage.id}/>;
+            case 'place2place':
+                return <StagePlace2Place id={stage.id}/>
+        }
     }
 
     render() {
@@ -144,7 +127,7 @@ class Stages extends Component {
                     {
                       this.state.stages.map(stage => {
                             return <Tabs.TabPane tab={stage.name} key={stage.id}>
-                                 Content of Tab Pane 1
+                                {this.stageBody(stage)}
                             </Tabs.TabPane>;
                       })
                     }
@@ -173,7 +156,9 @@ class Stages extends Component {
                                 return <React.Fragment>
                                     {Object.keys(this.state.form.elements).map(key => {
                                         if (this.state.parsed.indexOf(this.state.form.elements[key].id) != -1) {
-                                            return <MfwFormWidget key={key} element={this.state.form.elements[key]} widgetProps={{hidden: this.state.form.elements[key].attr.class != showType}}/>
+                                            return <MfwFormWidget key={key}
+                                               element={this.state.form.elements[key]}
+                                               widgetProps={{hidden: this.state.form.elements[key].attr.class != showType}}/>
                                         }
                                     })}
                                 </React.Fragment>

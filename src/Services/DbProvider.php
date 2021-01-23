@@ -69,6 +69,7 @@ class DbProvider
         } catch (\Doctrine\DBAL\DBALException $ex) {
             $err = explode('ERROR:', $ex->getPrevious()->getMessage());
             $this->error = str_replace(' ', '', explode("\n", $err[count($err)-1])[0]);
+            return;
         }
         return $res;
     }

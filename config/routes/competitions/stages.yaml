@@ -17,7 +17,7 @@ stageCreateForm:
         competition_id: -1
         
 stageEditForm:
-    path: /edit.form/{id}
+    path: /edit/form/{id}
     controller: App\Controller\Competitions\Stages::editForm
     methods: GET
     requirements:
@@ -43,3 +43,21 @@ stageDelete:
         id: \d+|-1    
     defaults:
         id: -1
+        
+stageView:
+    path: /view/{id}
+    controller: App\Controller\Competitions\Stages::view
+    methods: GET
+    requirements:
+        id: \d+|-1
+    defaults:
+        id: -1
+
+stageGames:
+    path: /games/{id}
+    controller: App\Controller\Competitions\Stages::games
+    methods: GET
+    requirements:
+        id: \d+|-1
+    defaults:
+        id: -1        

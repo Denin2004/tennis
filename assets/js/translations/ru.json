@@ -34,6 +34,7 @@
             "and_results": "Этапы и результаты",
             "type": "Тип",
             "group_count": "Кол-во групп",
+            "group_competitors": "Участников в группе",
             "place_count": "Кол-во игр за места",
             "types": {
                 "group": "Групповой этап",
@@ -50,7 +51,8 @@
         "errors": {
             "games_played": "Есть сыгранные игры",
             "stage_config": "Неправильная конфигурация этапа",
-            "competitor_not_found": "Участник не найден"
+            "competitor_not_found": "Участник не найден",
+            "stage_not_found": "Этап не найден"
         }
     },
     "common": {

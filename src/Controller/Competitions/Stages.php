@@ -104,4 +104,44 @@ class Stages extends Common
             'success' => true
         ]);
     }
+
+    public function view(StagesEntity $stagesDB, $id)
+    {
+        $view = $stagesDB->view([
+            'id' => $id,
+        ]);
+        if ($stagesDB->isError()) {
+            return new JsonResponse([
+                'success' => false,
+                'error' => $stagesDB->getError()
+            ]);
+        }
+        if (!$view) {
+            return new JsonResponse([
+                'success' => false,
+                'error' => 'competition.errors.stage_not_found'
+            ]);
+        }
+
+        $games = $stagesDB->games([
+            'id' => $id,
+        ]);
+        if ($stagesDB->isError()) {
+            return new JsonResponse([
+                'success' => false,
+                'error' => $stagesDB->getError()
+            ]);
+        }
+        if (!$view) {
+            return new JsonResponse([
+                'success' => false,
+                'error' => 'competition.errors.stage_not_found'
+            ]);
+        }
+        return new JsonResponse([
+            'success' => true,
+            'view' => $view,
+            'games' => $games
+        ]);
+    }
 }
