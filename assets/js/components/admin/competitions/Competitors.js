@@ -30,14 +30,10 @@ class Competitors extends Component {
                     title: this.props.t('competition.competitor._'),
                     dataIndex: 'name',
                     render: (text, row) => {
-                        const editable = this.isEditing(row),
-                            twoPlayers = [
-                                'competition.types.mensdouble',
-                                'competition.types.womensdouble',
-                                'competition.types.mixt'].includes(row.type);
+                        const editable = this.isEditing(row);
                         return editable ? (
                             <React.Fragment>
-                                {twoPlayers == true ? 
+                                {this.props.twoPlayers == true ? 
                                 <Row gutter={16}>
                                     <Col span={12}>
                                         <MfwFormWidget

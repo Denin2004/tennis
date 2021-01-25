@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
 
-import { Descriptions, message } from 'antd';
+import { Descriptions, message, Table } from 'antd';
 import { PlusOutlined } from '@ant-design/icons';
 
 import axios from 'axios';
@@ -52,12 +52,18 @@ class StageGroup extends Component {
     }
     
     competitor(game, competitor) {
-        const twoPlayers = [
-            'competition.types.mensdouble',
-            'competition.types.womensdouble',
-            'competition.types.mixt'].includes(game.type);
-        return competitor == 1 ? (twoPlayers != -1 ? (game.player11+' / '+game.player12) : (game.player11)) :
-            (twoPlayers != -1 ? (game.player21+' / '+game.player22) : (game.player21));
+        return competitor == 1 ? (this.props.twoPlayers ? (game.player11+' / '+game.player12) : (game.player11)) :
+            (this.props.twoPlayers != -1 ? (game.player21+' / '+game.player22) : (game.player21));
+    }
+    
+    gameScore(competitor_id, game) {
+        if ((game.player11_id === null)||(game.player21_id === null)) {
+            return '';
+        }
+        if (game.competitor1_id == competitor_id) {
+            return game.score1 + ' : ' + game.score2 + (game.tie1 != 0 || game.tie2 != 0 ?  game.tie1 + ' : ' + game.tie2 : '');
+        }
+        return game.score2 + ' : ' + game.score1 + (game.tie1 != 0 || game.tie2 != 0 ?  game.tie2 + ' : ' + game.tie1 : '');
     }
     
     groups(games) {
@@ -72,7 +78,8 @@ class StageGroup extends Component {
             }
             if (res[game.group_id]['games'][game.competitor1_id] == undefined) {
                 res[game.group_id]['games'][game.competitor1_id] = {
-                    name: stage.competitor(game, 1)
+                    name: stage.competitor(game, 1),
+                    score: game.competitor1_score
                 };
                 res[game.group_id]['games'][game.competitor1_id][game.competitor2_id] = {...game};
 
@@ -81,7 +88,8 @@ class StageGroup extends Component {
             }
             if (res[game.group_id]['games'][game.competitor2_id] == undefined) {
                 res[game.group_id]['games'][game.competitor2_id] = {
-                    name: stage.competitor(game, 2)
+                    name: stage.competitor(game, 2),
+                    score: game.competitor2_score
                 };
                 res[game.group_id]['games'][game.competitor2_id][game.competitor1_id] = {...game};
             } else {
@@ -98,35 +106,53 @@ class StageGroup extends Component {
             Object.keys(res[group].games).map(competitor1 => {
                 res[group].columns.push({
                     title: col,
-                    dataIndex: 'competitor_'+competitor1
+                    dataIndex: 'competitor_'+competitor1,
+                    align: 'center',
+                    render: (game, row) => {
+                        return row.id == competitor1 ? {props: {style: {background: 'black'}}, children: ''} : stage.gameScore(row.id/1, game);
+                    }
                 });
                 col++;
                 var row = {
-                    name: res[group].games[competitor1].name
+                    id: competitor1,
+                    name: res[group].games[competitor1].name,
+                    score: res[group].games[competitor1].score
                 };
                 row['competitor_'+competitor1] = '';
                 Object.keys(res[group].games[competitor1]).map(competitor2 => {
                     if (competitor2 != 'name') {
-                        row['competitor_'+competitor2] = '0:0';
+                        row['competitor_'+competitor2] = {...res[group].games[competitor1][competitor2]};
                     }
                 });
                 res[group].data.push(row);
             });
+            res[group].columns.push({
+                title: this.props.t('competition.competitor.score'),
+                dataIndex: 'score'
+            });            
             delete res[group].games;
         });
         return res;
     }
 
     render() {
-        console.log(this.state);
         return (
             this.state.loading ? (
                 <React.Fragment></React.Fragment>
             ) : (
-                <Descriptions>
-                    <Descriptions.Item label={this.props.t('competition.stage.group_count')}>{this.state.config.count}</Descriptions.Item>
-                    <Descriptions.Item label={this.props.t('competition.stage.group_competitors')}>{this.state.config.players}</Descriptions.Item>
-                </Descriptions>
+                <React.Fragment>
+                    <Descriptions>
+                        <Descriptions.Item label={this.props.t('competition.stage.group_count')}>{this.state.config.count}</Descriptions.Item>
+                        <Descriptions.Item label={this.props.t('competition.stage.group_competitors')}>{this.state.config.players}</Descriptions.Item>
+                    </Descriptions>
+                    {Object.keys(this.state.groups).map(id => {
+                        return (<Table columns={this.state.groups[id].columns} key={id}
+                              rowKey={record => record.id}
+                              dataSource={this.state.groups[id].data}
+                              pagination={false}/>
+                        );
+                    })}
+                </React.Fragment>
             )
         )
     }

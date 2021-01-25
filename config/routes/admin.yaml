@@ -1,5 +1,5 @@
 adminCompetition:
-    path: /competition/{id}
+    path: /competition/{id}/{type}
     controller: App\Controller\MainPage::index
     methods: GET
     requirements:
