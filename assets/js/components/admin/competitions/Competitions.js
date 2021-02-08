@@ -24,7 +24,7 @@ class Competitions extends Component {
                     render: (text, row) => {
                         var from = window.MFW_APP_PROPS.formats.datetimeToMoment(row.from),
                             to = window.MFW_APP_PROPS.formats.datetimeToMoment(row.to);
-                        return <Link to={'/admin/competition/'+row.id+'/'+row.type}>
+                        return <Link to={'/admin/competition/'+row.id+'/'+row.players_cnt}>
                             {to.diff(from, 'days') >= 1 ? row.from+' - '+row.to : text+' - '+to.format(window.MFW_APP_PROPS.formats.time)}</Link>;
                     }
                 },

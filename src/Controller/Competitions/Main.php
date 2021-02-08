@@ -31,7 +31,8 @@ class Main extends Common
         $form = $this->createForm(Add::class, $competition);
         return new JsonResponse([
             'success' => true,
-            'form' => $transformer->transform($form->createView())
+            'form' => $transformer->transform($form->createView()),
+            'type' => $competition['type']
         ]);
     }
 

@@ -9,7 +9,8 @@ class Main extends Entity
     {
         return $this->provider->fetchAll(
             'select competitions.id, to_char(competitions.from::timestamp, :format) as "from",
-                to_char(competitions.to::timestamp, :format) as "to", competitions.type, courts.name court
+                to_char(competitions.to::timestamp, :format) as "to", competitions.type, competitions.players_cnt,
+                courts.name court
                 from competitions. competitions
             left join competitions.courts courts on(courts.id=competitions.court_id)
             order by competitions.from desc',
@@ -30,7 +31,7 @@ class Main extends Entity
                 to_timestamp(:to, :format)) returning id', $params)[0];
         } else {
             $this->provider->executeQuery('update competitions.competitions set court_id=:court_id,
-                type=:type, "from"=to_timestamp(:from, :format), "to"=to_timestamp(:to, :format) where id=:id', $params);
+                "from"=to_timestamp(:from, :format), "to"=to_timestamp(:to, :format) where id=:id', $params);
         }
     }
 

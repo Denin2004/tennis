@@ -45,7 +45,7 @@ class Admin extends Component {
                             <Route path="/admin/main" component={Main} />
                             <Route path="/admin/competitions" component={Competitions} />
                             <Route path="/admin/courts" component={Courts} />
-                            <Route path="/admin/competition/:id(\d+)/:type" component={Competition} />
+                            <Route path="/admin/competition/:id(\d+)/:players_cnt(\d+)" component={Competition} />
                         </Switch>
                     </Content>
                     <Footer>Footer</Footer>

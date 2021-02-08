@@ -24,6 +24,7 @@ class Main extends Component {
             if (res.data.success) {
                 res.data.form.action = window.MFW_APP_PROPS.urls.competition.post;
                 res.data.form.elements.type.widgetProps.label = this.props.t('competition.type');
+                res.data.form.elements.type.selectProps = {disabled: true};
                 res.data.form.elements.court_id.widgetProps.label = this.props.t('court._court');
                 res.data.form.elements.period.widgetProps.itemProps.label = this.props.t('date._date');
                 this.props.form.resetFields();

@@ -53,7 +53,9 @@
             "games_played": "Есть сыгранные игры",
             "stage_config": "Неправильная конфигурация этапа",
             "competitor_not_found": "Участник не найден",
-            "stage_not_found": "Этап не найден"
+            "stage_not_found": "Этап не найден",
+            "competitor_2": "Пара не сформирована",
+            "competitor_1": "Игрок не указан"
         }
     },
     "common": {

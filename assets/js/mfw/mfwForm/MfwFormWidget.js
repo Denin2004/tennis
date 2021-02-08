@@ -57,7 +57,7 @@ class MfwFormWidget extends Component {
         const widgetProps = this.widgetProps();
         return (
             <Form.Item {...widgetProps}>
-                <Select>
+                <Select {...this.props.element.selectProps}>
                     {this.props.element.choices.map((choice) => {
                         return(
                       <Select.Option key={choice.value} value={choice.value}>{widgetProps.translate == 'true' ? 
