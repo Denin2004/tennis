@@ -10,7 +10,7 @@ class Competitors extends Entity
         return $this->provider->fetchAll(
             'select competitors.id, competitions.type,
                 competitors.player1_id, player1.name player1,
-                competitors.player2_id, player1.name player2,
+                competitors.player2_id, player2.name player2,
                 competitions.id as competition_id
             from competitions.competitors competitors
                 left join competitions.competitions competitions on (competitions.id=competitors.competition_id)

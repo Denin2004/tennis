@@ -98,7 +98,7 @@ class Competitors extends Component {
                                 <MfwFormWidget element={this.state.form.elements.id}/>
                                 <MfwFormWidget element={this.state.form.elements._token}/>
                             </React.Fragment>
-                        ) : (<React.Fragment>{twoPlayers == true ? <Space size="middle"><span>{row.player1}</span><span>{row.player2}</span></Space>: row.player1}</React.Fragment>)
+                        ) : (<React.Fragment>{this.props.twoPlayers == true ? <Space size="middle"><span>{row.player1}</span><span>{row.player2}</span></Space>: row.player1}</React.Fragment>)
                     }
                 },
                 {
