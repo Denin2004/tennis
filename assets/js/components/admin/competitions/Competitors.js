@@ -21,7 +21,8 @@ class Competitors extends Component {
         this.editRow = this.editRow.bind(this);
         this.delete = this.delete.bind(this);
         this.cancelEdit = this.cancelEdit.bind(this);
-
+        this.playerInput = this.playerInput.bind(this);
+        this.createPlayer = this.createPlayer.bind(this);
         this.state = {
             loading: true,
             editCompetitor: 0,
@@ -39,13 +40,14 @@ class Competitors extends Component {
                                         <MfwFormWidget
                                            element={this.state.form.elements.player1}
                                            autocompleteItemProps={{
-                                                className: 'mfw-margin-0'
+                                                className: 'mfw-margin-0 mfw-autocomplete-with=button'
                                             }}
                                            widgetProps={{
                                                search: {
                                                    url: window.MFW_APP_PROPS.urls.player.search,
                                                    form: this.props.form
-                                               }
+                                                },
+                                               customInput: this.playerInput
                                            }}
                                         />
                                     </Col>
@@ -310,7 +312,15 @@ class Competitors extends Component {
             columns: [...columns]
         });
     }
-
+    
+    playerInput() {
+        return <Input addonAfter={this.createPlayer()}/>
+    }
+    
+    createPlayer() {
+        return <Button className="sssss">Add Player</Button>
+    }
+    
     render() {
         return (
             <React.Fragment>

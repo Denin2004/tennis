@@ -12,7 +12,6 @@ class MfwAutocomplete extends Component {
                 (this.props.widgetProps ? this.props.widgetProps : {});
         this.onSearch = this.onSearch.bind(this);
         this.onSelect = this.onSelect.bind(this);
-        
         this.state = {
             widgetProps : widgetProps,
             autocompleteProps : this.props.element.autocompleteProps ? 
@@ -61,7 +60,9 @@ class MfwAutocomplete extends Component {
         return (
             <React.Fragment>    
                 <Form.Item {...this.state.autocompleteItemProps}>
-                    <AutoComplete {...this.state.autocompleteProps}/>
+                    <AutoComplete {...this.state.autocompleteProps}>
+                    { this.state.widgetProps.customInput ? this.state.widgetProps.customInput() : null} 
+                    </AutoComplete>
                 </Form.Item>
                 <Form.Item hidden={true} {...this.props.element.widgetProps.itemProps}>
                     <Input type="hidden"/>
