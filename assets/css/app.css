@@ -28,3 +28,8 @@
     background: white;
     padding: 24px;
 }
+
+.mfw-autocomplete-with-button .ant-input-group-addon{
+    padding: 0;
+    border: none;
+}
