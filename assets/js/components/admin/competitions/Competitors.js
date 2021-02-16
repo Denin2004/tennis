@@ -40,7 +40,7 @@ class Competitors extends Component {
                                         <MfwFormWidget
                                            element={this.state.form.elements.player1}
                                            autocompleteItemProps={{
-                                                className: 'mfw-margin-0 mfw-autocomplete-with=button'
+                                                className: 'mfw-margin-0 mfw-autocomplete-with-button'
                                             }}
                                            widgetProps={{
                                                search: {
