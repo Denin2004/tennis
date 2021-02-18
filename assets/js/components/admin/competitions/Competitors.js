@@ -318,7 +318,7 @@ class Competitors extends Component {
     }
     
     createPlayer() {
-        return <Button>{this.props.t('player.new')}</Button>
+        return <Button className="sssss">{this.props.t('player.new')}</Button>
     }
     
     render() {
