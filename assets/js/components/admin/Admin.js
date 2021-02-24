@@ -6,7 +6,7 @@ import i18n from '@app/i18app';
 import { withTranslation } from 'react-i18next';
 
 import Main from '@app/components/admin/Main';
-import Players from '@app/components/admin/Players';
+import Players from '@app/components/admin/players/Main';
 import Competitions from '@app/components/admin/competitions/Competitions';
 import Courts from '@app/components/admin/Courts';
 import Competition from '@app/components/admin/competitions/Competition';

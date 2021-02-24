@@ -18,7 +18,7 @@ class Players extends Entity
     public function post($params)
     {
         if ($params['id'] == -1) {
-            $this->provider->executeQuery('insert into players.players (name, phone)values(:name, :phone)', $params);
+            return $this->provider->fetchAll('insert into players.players (name, phone)values(:name, :phone) returning id, name, phone', $params);
         } else {
             $this->provider->executeQuery('update players.players set name=:name, phone=:phone where id=:id', $params);
         }

@@ -10,6 +10,8 @@ import { PlusOutlined, DeleteOutlined } from '@ant-design/icons';
 import MfwFormWidget from '@app/mfw/mfwForm/MfwFormWidget';
 import useWithForm from '@app/mfw/mfwForm/MfwFormHOC';
 
+import PlayerModal from '@app/components/admin//players/Modal';
+
 class Competitors extends Component {
     constructor(props){
         super(props);
@@ -21,8 +23,11 @@ class Competitors extends Component {
         this.editRow = this.editRow.bind(this);
         this.delete = this.delete.bind(this);
         this.cancelEdit = this.cancelEdit.bind(this);
-        this.playerInput = this.playerInput.bind(this);
+        this.playerInput1 = this.playerInput1.bind(this);
+        this.playerInput2 = this.playerInput2.bind(this);
         this.createPlayer = this.createPlayer.bind(this);
+        this.setPlayer = this.setPlayer.bind(this);
+        this.closeModal = this.closeModal.bind(this);
         this.state = {
             loading: true,
             editCompetitor: 0,
@@ -31,6 +36,7 @@ class Competitors extends Component {
                     title: this.props.t('competition.competitor._'),
                     dataIndex: 'name',
                     render: (text, row) => {
+                        console.log(this.state.form.elements.player1);
                         const editable = this.isEditing(row);
                         return editable ? (
                             <React.Fragment>
@@ -47,7 +53,7 @@ class Competitors extends Component {
                                                    url: window.MFW_APP_PROPS.urls.player.search,
                                                    form: this.props.form
                                                 },
-                                               customInput: this.playerInput
+                                               customInput: this.playerInput1
                                            }}
                                         />
                                     </Col>
@@ -61,7 +67,8 @@ class Competitors extends Component {
                                                search: {
                                                    url: window.MFW_APP_PROPS.urls.player.search,
                                                    form: this.props.form
-                                               }
+                                               },
+                                               customInput: this.playerInput2
                                            }}
                                         />
                                     </Col>
@@ -146,7 +153,9 @@ class Competitors extends Component {
             pagination: {
                 current: 1,
                 pageSize: 10
-            }
+            },
+            showPlayerModal: false,
+            addPlayerNum: 0
         }
     }
 
@@ -313,12 +322,25 @@ class Competitors extends Component {
         });
     }
     
-    playerInput() {
-        return <Input addonAfter={this.createPlayer()}/>
+    playerInput1() {
+        return <Input addonAfter={this.createPlayer(1)}/>
     }
     
-    createPlayer() {
-        return <Button className="sssss">{this.props.t('player.new')}</Button>
+    playerInput2() {
+        return <Input addonAfter={this.createPlayer(2)}/>
+    }
+    
+    createPlayer(num) {
+        return <Button onClick={() => this.setState({showPlayerModal: true, addPlayerNum: num})}>{this.props.t('player.new')}</Button>
+    }
+    
+    setPlayer(data) {
+        
+        console.log(data, this.state.addPlayerNum);
+    }
+    
+    closeModal() {
+        this.setState({showPlayerModal: false, addPlayerNum: 0});
     }
     
     render() {
@@ -341,6 +363,12 @@ class Competitors extends Component {
                         loading={this.state.loading}
                     />
                 </Form>
+                { this.state.showPlayerModal ? 
+                    <PlayerModal
+                       id={-1}
+                       close={this.closeModal}
+                       postSuccess={this.setPlayer}  /> : null
+                }
             </React.Fragment>
         )
     }

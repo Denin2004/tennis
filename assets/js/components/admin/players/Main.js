@@ -4,23 +4,20 @@ import axios from 'axios';
 import i18n from '@app/i18app';
 import { withTranslation } from 'react-i18next';
 
-import { Table, message, Button, Modal, Tooltip, Typography, Popconfirm } from 'antd';
+import { Table, message, Button, Tooltip, Typography, Popconfirm } from 'antd';
 import { PlusOutlined, DeleteOutlined } from '@ant-design/icons';
 
-import MfwForm from '@app/mfw/mfwForm/MfwForm';
-import MfwFormWidget from '@app/mfw/mfwForm/MfwFormWidget';
-import useWithForm from '@app/mfw/mfwForm/MfwFormHOC';
+import PlayerModal from '@app/components/admin//players/Modal';
 
 class Players extends Component {
     constructor(props){
         super(props);
         this.addForm = this.addForm.bind(this);
-        this.post = this.post.bind(this);
         this.closeModal = this.closeModal.bind(this);
         this.list = this.list.bind(this);
         this.showForm = this.showForm.bind(this);
         this.delete = this.delete.bind(this);
-        
+
         this.state = {
             loading: true,
             columns: [
@@ -30,8 +27,8 @@ class Players extends Component {
                     sorter: true,
                     render: (text, row) => {
                         return <React.Fragment>
-                            <Button 
-                              type="link" 
+                            <Button
+                              type="link"
                               onClick={() => this.showForm(row.id)}
                               className="mfw-table-button-link">{text}
                             </Button>
@@ -41,7 +38,7 @@ class Players extends Component {
                                   onConfirm={() => this.delete(row.id)}
                                   okText={this.props.t('confirm.yes')}
                                   cancelText={this.props.t('confirm.no')}>
-                                    <Button type="link" 
+                                    <Button type="link"
                                       className="mfw-table-button-link mfw-float-right">
                                         <Typography.Text type="secondary">
                                             <DeleteOutlined className="mfw-test"/>
@@ -49,7 +46,7 @@ class Players extends Component {
                                     </Button>
                                 </Popconfirm>
                             </Tooltip>
-                        </React.Fragment>    
+                        </React.Fragment>
                     }
                 },
                 {
@@ -65,7 +62,7 @@ class Players extends Component {
             modal: false
         }
     }
-    
+
     componentDidMount() {
         this.list();
     }
@@ -75,6 +72,7 @@ class Players extends Component {
             if (res.data.success) {
                 this.setState({
                     loading: false,
+                    modal: false,
                     data: res.data.data,
                     pagination: {
                         total: res.data.data.length
@@ -93,56 +91,14 @@ class Players extends Component {
     addForm() {
         this.showForm(-1);
     }
-    
+
     showForm(id) {
-        axios.get(window.MFW_APP_PROPS.urls.player.form+'/'+id).then(res => {
-            if (res.data.success) {
-                res.data.form.elements.name.widgetProps.label = this.props.t('player.fio');
-                res.data.form.elements.phone.widgetProps.label = this.props.t('player.phone');
-                res.data.form.action = window.MFW_APP_PROPS.urls.player.post;
-                this.props.form.resetFields();
-                this.setState({
-                    form: res.data.form,
-                    modal: true,
-                    loading: false,
-                    editPlayer: id
-                });
-            } else {
-                message.error(this.props.t(res.data.error));
-                this.setState({modal: false})
-            }
-        }).catch((error) => {
-            message.error(error.toString());
-            this.setState({modal: false});
+        this.setState({
+            modal: true,
+            editPlayer: id
         });
     }
 
-    post() {
-        this.props.form
-            .validateFields()
-            .then(values => {
-                axios({
-                    method: this.state.form.method,
-                    url: window.MFW_APP_PROPS.urls.player.post,
-                    data: values,
-                    headers: {'Content-Type': 'application/json'}
-                }).then(res => {
-                    if (res.data.success) {
-                        this.list();
-                    } else {
-                        message.error(this.props.t(res.data.error));
-                    }
-                }).catch(error => {
-                    message.error(error.toString());
-                });
-                this.setState({modal: false});
-            })
-            .catch(info => {
-                message.error(this.props.t('common.errors.validate'));
-            });
-        this.setState({modal: false});
-    }
-    
     delete(id) {
         axios.get(window.MFW_APP_PROPS.urls.player.delete+'/'+id).then(res => {
             if (res.data.success) {
@@ -178,28 +134,14 @@ class Players extends Component {
                     loading={this.state.loading}
                 />
                 {this.state.modal == true ?
-                    <Modal
-                      title={this.props.t(this.state.editPlayer == -1 ? 'player.new' : 'player.edit') }
-                      visible={this.state.modal}
-                      onOk={this.post}
-                      onCancel={this.closeModal}>
-                        <MfwForm
-                           formProps={{
-                               form: this.props.form,
-                               name: this.state.form.name,
-                               labelCol: { span: 8 },
-                               wrapperCol: { span: 16 }
-                           }}
-                           mfwForm={this.state.form}
-                           success={this.list}>
-                            <MfwFormWidget element={this.state.form.elements.name}/>
-                            <MfwFormWidget element={this.state.form.elements.phone}/>
-                        </MfwForm>
-                    </Modal> : ''
+                    <PlayerModal
+                       id={this.state.editPlayer}
+                       close={this.closeModal}
+                       postSuccess={this.list}  />  : ''
                 }
             </React.Fragment>
         )
     }
 }
 
-export default useWithForm(withTranslation()(Players));
+export default withTranslation()(Players);

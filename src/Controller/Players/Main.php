@@ -56,9 +56,11 @@ class Main extends Common
             ]);
         }
 
-        $playersDB->post($form->getData());
+        $res = $playersDB->post($form->getData());
         return new JsonResponse([
-            'success' => true
+            'success' => true,
+            'player' => $res != null ? $res[0] : null
+
         ]);
     }
 

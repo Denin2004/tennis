@@ -114,7 +114,7 @@ class Stages extends Component {
     stageBody(stage) {
         switch(stage.type) {
             case 'group':
-                return <StageGroup id={stage.id} twoPlayers={this.props.twoPlayers}/>;
+                return <StageGroup id={stage.id} twoPlayers={this.props.twoPlayers}/>
             case 'place2place':
                 return <StagePlace2Place id={stage.id} twoPlayers={this.props.twoPlayers}/>
         }
