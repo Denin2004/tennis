@@ -335,7 +335,7 @@ class Competitors extends Component {
     }
     
     setPlayer(data) {
-        
+        /*!!!!!!!!!!!!!!!*/
         console.log(data, this.state.addPlayerNum);
     }
     
