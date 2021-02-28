@@ -42,6 +42,16 @@ class Main extends Common
 
     public function post(Request $request, PlayersEntity $playersDB)
     {
+        return new JsonResponse([
+            'success' => true,
+            'player' => [
+                'id' => 1,
+                'name' => 'Денис',
+                'phone' => '+79062539293'
+            ]
+        ]);
+
+
         $formData = json_decode($request->getContent(), true);
         if ($formData == null) {
             return new JsonResponse([

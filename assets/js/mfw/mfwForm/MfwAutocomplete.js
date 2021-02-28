@@ -56,7 +56,12 @@ class MfwAutocomplete extends Component {
         this.props.widgetProps.search.form.setFieldsValue(values);
     }
     
+    componentWillReceiveProps(nextProps) {
+        console.log('receive props');
+    } 
+    
     render() {
+        console.log(this.state.autocompleteProps, this.props.element.widgetProps.itemProps);
         return (
             <React.Fragment>    
                 <Form.Item {...this.state.autocompleteItemProps}>

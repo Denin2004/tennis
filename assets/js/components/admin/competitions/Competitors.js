@@ -36,8 +36,8 @@ class Competitors extends Component {
                     title: this.props.t('competition.competitor._'),
                     dataIndex: 'name',
                     render: (text, row) => {
-                        console.log(this.state.form.elements.player1);
                         const editable = this.isEditing(row);
+                        console.log(editable ? 'edit row' : 'show row');
                         return editable ? (
                             <React.Fragment>
                                 {this.props.twoPlayers == true ? 
@@ -323,7 +323,8 @@ class Competitors extends Component {
     }
     
     playerInput1() {
-        return <Input addonAfter={this.createPlayer(1)}/>
+        console.log('player input');
+        return <Input addonAfter={this.createPlayer(1)} defaultValue="sss"/>
     }
     
     playerInput2() {
@@ -336,7 +337,17 @@ class Competitors extends Component {
     
     setPlayer(data) {
         /*!!!!!!!!!!!!!!!*/
-        console.log(data, this.state.addPlayerNum);
+        this.setState(state => {
+            state.form.elements.player1.search.widgetProps.initialValue = data.player.name;
+            state.form.elements.player1.value.widgetProps.initialValue = data.player.id;
+            state.form.elements.player1.widgetProps.initialValue = {
+                search: data.player.name,
+                value: data.player.id                
+            };
+            state.showPlayerModal = false;
+            state.addPlayerNum = 0;
+            return state;
+        })
     }
     
     closeModal() {
