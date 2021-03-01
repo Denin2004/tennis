@@ -37,8 +37,10 @@ class Competitors extends Component {
                     dataIndex: 'name',
                     render: (text, row) => {
                         const editable = this.isEditing(row);
+                        console.log('row');
                         return editable ? (
                             <React.Fragment>
+                    <Form form={this.props.form} name={this.state.form.name}>
                                 {this.props.twoPlayers == true ? 
                                 <Row gutter={16}>
                                     <Col span={12}>
@@ -105,6 +107,7 @@ class Competitors extends Component {
                                 <MfwFormWidget element={this.state.form.elements.competition_id}/>
                                 <MfwFormWidget element={this.state.form.elements.id}/>
                                 <MfwFormWidget element={this.state.form.elements._token}/>
+                                        </Form>
                             </React.Fragment>
                         ) : (<React.Fragment>{this.props.twoPlayers == true ? <Space size="middle"><span>{row.player1}</span><span>{row.player2}</span></Space>: row.player1}</React.Fragment>)
                     }
@@ -206,6 +209,7 @@ class Competitors extends Component {
                             type: res.data.form.elements.competition_type.widgetProps.initialValue
                         }, ...state.data];
                     }
+                    console.log(res.data.form);
                     return {
                         form: res.data.form,
                         loading: false,
@@ -322,7 +326,7 @@ class Competitors extends Component {
     }
     
     playerInput1() {
-        return <Input addonAfter={this.createPlayer(1)} defaultValue="Денис"/>
+        return <Input addonAfter={this.createPlayer(1)} value="Денис"/>
     }
     
     playerInput2() {
@@ -334,10 +338,16 @@ class Competitors extends Component {
     }
     
     setPlayer(data) {
+        const values = {};
+        values['player'+this.state.addPlayerNum] = {};
+        values['player'+this.state.addPlayerNum][this.state.form.elements['player'+this.state.addPlayerNum].value.widgetProps.name] = data.player.id;
+        values['player'+this.state.addPlayerNum][this.state.form.elements['player'+this.state.addPlayerNum].search.widgetProps.name] = data.player.name;
+        this.props.form.setFieldsValue(values);
+      
         this.setState(state => {
-            state.form.elements.player1.search.widgetProps.initialValue = data.player.name;
-            state.form.elements.player1.value.widgetProps.initialValue = data.player.id;
-            state.form.elements.player1.widgetProps.itemProps.initialValue = {
+            state.form.elements['player'+state.addPlayerNum].search.widgetProps.initialValue = data.player.name;
+            state.form.elements['player'+state.addPlayerNum].value.widgetProps.initialValue = data.player.id;
+            state.form.elements['player'+state.addPlayerNum].widgetProps.itemProps.initialValue = {
                 search: data.player.name,
                 value: data.player.id                
             };
