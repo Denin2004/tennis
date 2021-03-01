@@ -21,9 +21,9 @@ class MfwAutocomplete extends Component {
                         onSearch: this.onSearch, 
                         onSelect: this.onSelect,
                         options: [], 
-                        defaultValue: this.props.element.search.widgetProps.initialValue} : 
+                        value: this.props.element.search.widgetProps.initialValue} : 
                         {
-                            defaultValue: this.props.element.search.widgetProps.initialValue
+                            value: this.props.element.search.widgetProps.initialValue
                         }
                     )),
             autocompleteItemProps : this.props.element.autocompleteItemProps ? 
@@ -69,10 +69,10 @@ class MfwAutocomplete extends Component {
                     (widgetProps.search ? {
                         onSearch: this.onSearch, 
                         onSelect: this.onSelect,
-                        options: [], 
-                        defaultValue: nextProps.element.search.widgetProps.initialValue} : 
+                        options: [],                         
+                        value: nextProps.element.search.widgetProps.initialValue} : 
                         {
-                            defaultValue: nextProps.element.search.widgetProps.initialValue
+                            value: nextProps.element.search.widgetProps.initialValue
                         }
                     ));
             state.autocompleteItemProps = nextProps.element.autocompleteItemProps ? 
