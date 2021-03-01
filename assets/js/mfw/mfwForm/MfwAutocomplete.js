@@ -57,11 +57,32 @@ class MfwAutocomplete extends Component {
     }
     
     componentWillReceiveProps(nextProps) {
-        console.log('receive props');
+        const widgetProps = nextProps.element.widgetProps ? 
+                (nextProps.widgetProps ? {...nextProps.element.widgetProps, ...nextProps.widgetProps} : netxProps.element.widgetProps) : 
+                (nextProps.widgetProps ? nextProps.widgetProps : {});
+        
+        this.setState(state => {
+            state.widgetProps = widgetProps;
+            state.autocompleteProps = nextProps.element.autocompleteProps ? 
+                (nextProps.autocompleteProps ? {...nextProps.element.autocompleteProps, ...nextProps.autocompleteProps} : nextProps.element.autocompleteProps) : 
+                (nextProps.autocompleteProps ? nextProps.autocompleteProps : 
+                    (widgetProps.search ? {
+                        onSearch: this.onSearch, 
+                        onSelect: this.onSelect,
+                        options: [], 
+                        defaultValue: nextProps.element.search.widgetProps.initialValue} : 
+                        {
+                            defaultValue: nextProps.element.search.widgetProps.initialValue
+                        }
+                    ));
+            state.autocompleteItemProps = nextProps.element.autocompleteItemProps ? 
+                (nextProps.autocompleteItemProps ? {...nextProps.element.autocompleteItemProps, ...nextProps.autocompleteItemProps} : nextProps.element.autocompleteItemProps) : 
+                (nextProps.autocompleteItemProps ? nextProps.autocompleteItemProps : {});
+            return state;
+        });
     } 
     
     render() {
-        console.log(this.state.autocompleteProps, this.props.element.widgetProps.itemProps);
         return (
             <React.Fragment>    
                 <Form.Item {...this.state.autocompleteItemProps}>

@@ -37,7 +37,6 @@ class Competitors extends Component {
                     dataIndex: 'name',
                     render: (text, row) => {
                         const editable = this.isEditing(row);
-                        console.log(editable ? 'edit row' : 'show row');
                         return editable ? (
                             <React.Fragment>
                                 {this.props.twoPlayers == true ? 
@@ -61,7 +60,7 @@ class Competitors extends Component {
                                         <MfwFormWidget
                                            element={this.state.form.elements.player2}
                                            autocompleteItemProps={{
-                                                className: 'mfw-margin-0'
+                                                className: 'mfw-margin-0 mfw-autocomplete-with-button'
                                             }}
                                            widgetProps={{
                                                search: {
@@ -323,8 +322,7 @@ class Competitors extends Component {
     }
     
     playerInput1() {
-        console.log('player input');
-        return <Input addonAfter={this.createPlayer(1)} defaultValue="sss"/>
+        return <Input addonAfter={this.createPlayer(1)} defaultValue="Денис"/>
     }
     
     playerInput2() {
@@ -336,11 +334,10 @@ class Competitors extends Component {
     }
     
     setPlayer(data) {
-        /*!!!!!!!!!!!!!!!*/
         this.setState(state => {
             state.form.elements.player1.search.widgetProps.initialValue = data.player.name;
             state.form.elements.player1.value.widgetProps.initialValue = data.player.id;
-            state.form.elements.player1.widgetProps.initialValue = {
+            state.form.elements.player1.widgetProps.itemProps.initialValue = {
                 search: data.player.name,
                 value: data.player.id                
             };
