@@ -37,10 +37,8 @@ class Competitors extends Component {
                     dataIndex: 'name',
                     render: (text, row) => {
                         const editable = this.isEditing(row);
-                        console.log('row');
                         return editable ? (
                             <React.Fragment>
-                    <Form form={this.props.form} name={this.state.form.name}>
                                 {this.props.twoPlayers == true ? 
                                 <Row gutter={16}>
                                     <Col span={12}>
@@ -107,7 +105,6 @@ class Competitors extends Component {
                                 <MfwFormWidget element={this.state.form.elements.competition_id}/>
                                 <MfwFormWidget element={this.state.form.elements.id}/>
                                 <MfwFormWidget element={this.state.form.elements._token}/>
-                                        </Form>
                             </React.Fragment>
                         ) : (<React.Fragment>{this.props.twoPlayers == true ? <Space size="middle"><span>{row.player1}</span><span>{row.player2}</span></Space>: row.player1}</React.Fragment>)
                     }
@@ -209,7 +206,6 @@ class Competitors extends Component {
                             type: res.data.form.elements.competition_type.widgetProps.initialValue
                         }, ...state.data];
                     }
-                    console.log(res.data.form);
                     return {
                         form: res.data.form,
                         loading: false,
@@ -334,23 +330,22 @@ class Competitors extends Component {
     }
     
     createPlayer(num) {
-        return <Button onClick={() => this.setState({showPlayerModal: true, addPlayerNum: num})}>{this.props.t('player.new')}</Button>
+        return <Button onClick={() => this.setState(state => {
+            state.showPlayerModal = true;
+            state.addPlayerNum = num;
+            delete state.form.elements.player1.setValue;
+            delete state.form.elements.player2.setValue;
+            return state;
+         })}>{this.props.t('player.new')}</Button>
     }
     
     setPlayer(data) {
-        const values = {};
-        values['player'+this.state.addPlayerNum] = {};
-        values['player'+this.state.addPlayerNum][this.state.form.elements['player'+this.state.addPlayerNum].value.widgetProps.name] = data.player.id;
-        values['player'+this.state.addPlayerNum][this.state.form.elements['player'+this.state.addPlayerNum].search.widgetProps.name] = data.player.name;
-        this.props.form.setFieldsValue(values);
-      
         this.setState(state => {
-            state.form.elements['player'+state.addPlayerNum].search.widgetProps.initialValue = data.player.name;
-            state.form.elements['player'+state.addPlayerNum].value.widgetProps.initialValue = data.player.id;
-            state.form.elements['player'+state.addPlayerNum].widgetProps.itemProps.initialValue = {
+            state.form.elements['player'+state.addPlayerNum].setValue = {
                 search: data.player.name,
                 value: data.player.id                
             };
+            delete state.form.elements['player'+(state.addPlayerNum == 1 ? 2 : 1)].setValue;
             state.showPlayerModal = false;
             state.addPlayerNum = 0;
             return state;
@@ -358,7 +353,13 @@ class Competitors extends Component {
     }
     
     closeModal() {
-        this.setState({showPlayerModal: false, addPlayerNum: 0});
+        this.setState(state => {
+            state.showPlayerModal = false;
+            state.addPlayerNum = 0;
+            delete state.form.elements.player1.setValue;
+            delete state.form.elements.player2.setValue;
+            return state;
+        });
     }
     
     render() {

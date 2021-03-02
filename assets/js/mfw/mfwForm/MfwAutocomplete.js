@@ -12,6 +12,7 @@ class MfwAutocomplete extends Component {
                 (this.props.widgetProps ? this.props.widgetProps : {});
         this.onSearch = this.onSearch.bind(this);
         this.onSelect = this.onSelect.bind(this);
+        this.onChange = this.onChange.bind(this);
         this.state = {
             widgetProps : widgetProps,
             autocompleteProps : this.props.element.autocompleteProps ? 
@@ -20,6 +21,7 @@ class MfwAutocomplete extends Component {
                     (widgetProps.search ? {
                         onSearch: this.onSearch, 
                         onSelect: this.onSelect,
+                        onChange: this.onChange,
                         options: []/*, 
                         value: this.props.element.value.widgetProps.initialValue != '' ? this.props.element.search.widgetProps.initialValue : ''*/} : 
                         {
@@ -56,42 +58,32 @@ class MfwAutocomplete extends Component {
         this.props.widgetProps.search.form.setFieldsValue(values);
     }
     
-    componentWillReceiveProps(nextProps) {
-        /*const widgetProps = nextProps.element.widgetProps ? 
-                (nextProps.widgetProps ? {...nextProps.element.widgetProps, ...nextProps.widgetProps} : netxProps.element.widgetProps) : 
-                (nextProps.widgetProps ? nextProps.widgetProps : {});
-        const values = {};
-        values[this.props.element.widgetProps.name] = {};
-        values[this.props.element.widgetProps.name][this.props.element.value.widgetProps.name] = nextProps.element.value.widgetProps.initialValue;
-        values[this.props.element.widgetProps.name][this.props.element.search.widgetProps.name] = nextProps.element.search.widgetProps.initialValue;
-        this.props.widgetProps.search.form.setFieldsValue(values);        
+    onChange(value) {
         this.setState(state => {
-            state.widgetProps = widgetProps;
-            state.autocompleteProps = nextProps.element.autocompleteProps ? 
-                (nextProps.autocompleteProps ? {...nextProps.element.autocompleteProps, ...nextProps.autocompleteProps} : nextProps.element.autocompleteProps) : 
-                (nextProps.autocompleteProps ? nextProps.autocompleteProps : 
-                    (widgetProps.search ? {
-                        onSearch: this.onSearch, 
-                        onSelect: this.onSelect,
-                        options: [],                         
-                        value: nextProps.element.search.widgetProps.initialValue} : 
-                        {
-                            value: nextProps.element.search.widgetProps.initialValue
-                        }
-                    ));
-            state.autocompleteItemProps = nextProps.element.autocompleteItemProps ? 
-                (nextProps.autocompleteItemProps ? {...nextProps.element.autocompleteItemProps, ...nextProps.autocompleteItemProps} : nextProps.element.autocompleteItemProps) : 
-                (nextProps.autocompleteItemProps ? nextProps.autocompleteItemProps : {});
-            return state;
-        });*/
+            state.autocompleteProps.value = value;
+            return state; 
+        });
+    }
+    
+    componentWillReceiveProps(nextProps) {
+        if (nextProps.element.setValue != undefined) {
+            this.setState(state => {
+                state.autocompleteProps.value = nextProps.element.setValue.search;
+                return state; 
+            });
+            const values = {};
+            values[this.props.element.widgetProps.name] = {};
+            values[this.props.element.widgetProps.name][this.props.element.value.widgetProps.name] = nextProps.element.setValue.value;
+            values[this.props.element.widgetProps.name][this.props.element.search.widgetProps.name] = nextProps.element.setValue.search;
+            this.props.widgetProps.search.form.setFieldsValue(values);
+        }
     } 
     
     render() {
-        console.log(this.props);
         return (
             <React.Fragment>    
                 <Form.Item {...this.state.autocompleteItemProps}>
-                    <AutoComplete {...this.state.autocompleteProps} value={this.props.element.search.widgetProps.initialValue}>
+                    <AutoComplete {...this.state.autocompleteProps}>
                     { this.state.widgetProps.customInput ? this.state.widgetProps.customInput() : null} 
                     </AutoComplete>
                 </Form.Item>
