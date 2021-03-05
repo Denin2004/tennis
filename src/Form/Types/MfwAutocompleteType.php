@@ -13,8 +13,8 @@ class MfwAutocompleteType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
-        $builder->add('search', TextType::class);
-        $builder->add('value', HiddenType::class);
+        $builder->add('search', TextType::class)
+            ->add('value', HiddenType::class);
     }
 
     public function configureOptions(OptionsResolver $resolver): void

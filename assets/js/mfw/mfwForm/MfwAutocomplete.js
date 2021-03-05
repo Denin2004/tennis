@@ -22,10 +22,10 @@ class MfwAutocomplete extends Component {
                         onSearch: this.onSearch, 
                         onSelect: this.onSelect,
                         onChange: this.onChange,
-                        options: []/*, 
-                        value: this.props.element.value.widgetProps.initialValue != '' ? this.props.element.search.widgetProps.initialValue : ''*/} : 
+                        options: [], 
+                        value: this.props.element.value.widgetProps.initialValue != '' ? this.props.element.search.widgetProps.initialValue : ''} : 
                         {
-/*                            value: this.props.element.search.widgetProps.initialValue*/
+                            value: this.props.element.search.widgetProps.initialValue
                         }
                     )),
             autocompleteItemProps : this.props.element.autocompleteItemProps ? 

@@ -51,9 +51,6 @@ class Competitors extends Entity
                 'search' => $res[0]['player1'],
                 'value' => $res[0]['player1_id']
             ];
-            return $res[0];
-        }
-        if (isset($res[0])) {
             $res[0]['player2'] = [
                 'search' => $res[0]['player2'],
                 'value' => $res[0]['player2_id']
