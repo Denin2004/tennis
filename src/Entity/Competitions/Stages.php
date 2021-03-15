@@ -64,5 +64,4 @@ class Stages extends Entity
     {
         $this->provider->executeQuery('delete from competitions.competitors where id=:id', $params);
     }
-
 }

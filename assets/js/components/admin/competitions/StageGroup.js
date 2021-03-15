@@ -52,8 +52,12 @@ class StageGroup extends Component {
     }
     
     competitor(game, competitor) {
-        return competitor == 1 ? (this.props.twoPlayers ? (game.player11+' / '+game.player12) : (game.player11)) :
-            (this.props.twoPlayers != -1 ? (game.player21+' / '+game.player22) : (game.player21));
+        return competitor == 1 ? (this.props.twoPlayers ? (this.player(game.player11)+' / '+this.player(game.player12)) : (this.player(game.player11))) :
+            (this.props.twoPlayers ? (this.player(game.player21)+' / '+this.player(game.player22)) : (this.player(game.player21)));
+    }
+    
+    player(player) {
+        return player != null ? player : '';
     }
     
     gameScore(competitor_id, game) {
