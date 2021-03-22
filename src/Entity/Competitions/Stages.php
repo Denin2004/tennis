@@ -64,4 +64,12 @@ class Stages extends Entity
     {
         $this->provider->executeQuery('delete from competitions.competitors where id=:id', $params);
     }
+
+    public function freeCompetitors($params)
+    {
+        return $this->provider->fetchAll(
+            'select * from competitions.stage_free_competitors(:id)',
+            $params
+        );
+    }
 }

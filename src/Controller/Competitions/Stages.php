@@ -144,4 +144,21 @@ class Stages extends Common
             'games' => $games
         ]);
     }
+
+    public function freeCompetitors(StagesEntity $stagesDB, $id)
+    {
+        $competitors = $stagesDB->freeCompetitors([
+            'id' => $id,
+        ]);
+        if ($stagesDB->isError()) {
+            return new JsonResponse([
+                'success' => false,
+                'error' => $stagesDB->getError()
+            ]);
+        }
+        return new JsonResponse([
+            'success' => true,
+            'competitors' => $competitors
+        ]);
+    }
 }
