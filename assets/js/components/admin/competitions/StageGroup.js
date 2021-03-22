@@ -56,7 +56,6 @@ class StageGroup extends Component {
     }*/
     
     gameCompetitor(game, competitor) {
-        console.log(game);
         return competitor == 1 ? this.groupCompetitor({
             stageID: game.stage_id,
             player1: game.player11,
@@ -76,14 +75,14 @@ class StageGroup extends Component {
     
     groupCompetitor(competitor) {
         if (competitor.gamesPlayed == 0) {
-            return <Button  type="link" onClick={() => {this.editCompetitor(competitor.stageID)}}>{competitor.groupCompetitorID === null ? this.props.t('competition.competitor.vacancy') : 
+            return <Button  type="link" onClick={() => {this.editCompetitor(competitor.stageID, competitor.groupCompetitorID)}}>{competitor.groupCompetitorID === null ? this.props.t('competition.competitor.vacancy') : 
                     (this.props.twoPlayers ? competitor.player1+'/'+competitor.player2 : competitor.player1)}</Button>
         }
         return this.props.twoPlayers ? competitor.player1+'/'+competitor.player2 : competitor.player1;
     }
     
-    editCompetitor(stageID) {
-        axios.get(window.MFW_APP_PROPS.urls.competition.stage.freeCompetitors+'/'+stageID).then(res => {
+    editCompetitor(stageID, groupCompetitorID) {
+        axios.get(window.MFW_APP_PROPS.urls.competition.stage.editCompetitor+'/'+stageID+'/'+groupCompetitorID).then(res => {
             if (res.data.success) {
                 this.setState({
                     loading: false,
