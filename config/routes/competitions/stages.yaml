@@ -15,7 +15,7 @@ stageCreateForm:
         competition_id: \d+|-1
     defaults:
         competition_id: -1
-        
+
 stageEditForm:
     path: /edit/form/{id}
     controller: App\Controller\Competitions\Stages::editForm
@@ -40,10 +40,10 @@ stageDelete:
     controller: App\Controller\Competitions\Stages::delete
     methods: GET
     requirements:
-        id: \d+|-1    
+        id: \d+|-1
     defaults:
         id: -1
-        
+
 stageView:
     path: /view/{id}
     controller: App\Controller\Competitions\Stages::view
@@ -60,4 +60,14 @@ stageGames:
     requirements:
         id: \d+|-1
     defaults:
-        id: -1        
+        id: -1
+
+stageEditCompetitor:
+    path: /freecompetitord/{stage_id}/{group_competitor_id}
+    controller: App\Controller\Competitions\Stages::editCompetitor
+    requirements:
+        stage_id: \d+|-1
+        group_competitor_id: \d+|-1
+    defaults:
+        stage_id: -1
+        group_competitor_id: \d+|-1

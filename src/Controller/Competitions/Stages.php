@@ -8,6 +8,7 @@ use App\Controller\Common;
 use App\Services\FormTransformer;
 use App\Entity\Competitions\Stages as StagesEntity;
 use App\Form\Competitions\Stages\Create;
+use App\Form\Competitions\Stages\EditCompetitor;
 
 class Stages extends Common
 {
@@ -142,6 +143,23 @@ class Stages extends Common
             'success' => true,
             'view' => $view,
             'games' => $games
+        ]);
+    }
+
+    public function editCompetitors(FormTransformer $transformer, $stage_id, $group_competitor_id)
+    {
+        $form = $this->createForm(
+            EditCompetitor::class,
+            [
+                'group_competitor_id' => $competitor_id
+            ],
+            [
+                'stage_id' => $stage_id
+            ]
+        );
+        return new JsonResponse([
+            'success' => true,
+            'form' => $transformer->transform($form->createView())
         ]);
     }
 }

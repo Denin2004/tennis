@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
 
-import { Descriptions, message, Table } from 'antd';
+import { Descriptions, message, Table, Button } from 'antd';
 import { PlusOutlined } from '@ant-design/icons';
 
 import axios from 'axios';
@@ -14,10 +14,13 @@ import useWithForm from '@app/mfw/mfwForm/MfwFormHOC';
 class StageGroup extends Component {
     constructor(props){
         super(props);
-        this.games = this.games.bind(this);
+//        this.games = this.games.bind(this);
         this.groups = this.groups.bind(this);
+        this.groupCompetitor = this.groupCompetitor.bind(this);
+        this.editCompetitor = this.editCompetitor.bind(this);
         this.state = {
-            loading: true
+            loading: true,
+            editCompetitor: -1
         }
     }
 
@@ -37,9 +40,10 @@ class StageGroup extends Component {
         });
     }
 
-    games() {
-        axios.get(window.MFW_APP_PROPS.urls.competition.stage.games+'/'+this.props.group_id).then(res => {
+  /*  games() {
+          axios.get(window.MFW_APP_PROPS.urls.competition.stage.games+'/'+this.props.group_id).then(res => {
             if (res.data.success) {
+                console.log(res.data);
                 this.setState({
                     loading: false
                 });
@@ -49,15 +53,52 @@ class StageGroup extends Component {
         }).catch((error) => {
             message.error(error.toString());
         });
+    }*/
+    
+    gameCompetitor(game, competitor) {
+        return competitor == 1 ? this.groupCompetitor({
+            stageID: game.stage_id,
+            player1: game.player11,
+            player2: game.player12,
+            gamesPlayed: game.competitor1_games_played,
+            competitorID: game.competitor1_id,
+            groupCompetitorID: game.group_competitor1_id
+        }) : this.groupCompetitor({
+            stageID: game.stage_id,
+            player1: game.player21,
+            player2: game.player22,
+            gamesPlayed: game.competitor2_games_played,
+            competitorID: game.competitor2_id,
+            groupCompetitorID: game.group_competitor2_id            
+        });
     }
     
-    competitor(game, competitor) {
-        return competitor == 1 ? (this.props.twoPlayers ? (this.player(game.player11)+' / '+this.player(game.player12)) : (this.player(game.player11))) :
-            (this.props.twoPlayers ? (this.player(game.player21)+' / '+this.player(game.player22)) : (this.player(game.player21)));
+    groupCompetitor(competitor) {
+        if (competitor.gamesPlayed == 0) {
+            return <Button  type="link" onClick={() => {this.editCompetitor(competitor.stageID, competitor.groupCompetitorID)}}>{competitor.groupCompetitorID === null ? this.props.t('competition.competitor.vacancy') : 
+                    (this.props.twoPlayers ? competitor.player1+'/'+competitor.player2 : competitor.player1)}</Button>
+        }
+        return this.props.twoPlayers ? competitor.player1+'/'+competitor.player2 : competitor.player1;
     }
     
-    player(player) {
-        return player != null ? player : '';
+    editCompetitor(stageID, groupCompetitorID) {
+        axios.get(window.MFW_APP_PROPS.urls.competition.stage.editCompetitor+'/'+stageID+'/'+groupCompetitorID).then(res => {
+            if (res.data.success) {
+                this.setState({
+                    loading: false,
+                    editCompetitor: competitorID,
+                    
+                });
+            } else {
+                message.error(this.props.t(res.data.error));
+            }
+        }).catch((error) => {
+            message.error(error.toString());
+        });
+        this.setState({
+            loading: true,
+            editCompetitor: -1
+        })
     }
     
     gameScore(competitor_id, game) {
@@ -82,7 +123,7 @@ class StageGroup extends Component {
             }
             if (res[game.group_id]['games'][game.competitor1_id] == undefined) {
                 res[game.group_id]['games'][game.competitor1_id] = {
-                    name: stage.competitor(game, 1),
+                    name: stage.gameCompetitor(game, 1),
                     score: game.competitor1_score
                 };
                 res[game.group_id]['games'][game.competitor1_id][game.competitor2_id] = {...game};
@@ -92,7 +133,7 @@ class StageGroup extends Component {
             }
             if (res[game.group_id]['games'][game.competitor2_id] == undefined) {
                 res[game.group_id]['games'][game.competitor2_id] = {
-                    name: stage.competitor(game, 2),
+                    name: stage.gameCompetitor(game, 2),
                     score: game.competitor2_score
                 };
                 res[game.group_id]['games'][game.competitor2_id][game.competitor1_id] = {...game};
