@@ -59,7 +59,6 @@ class Competitors extends Common
                 'error' => $this->formErrors($form)
             ]);
         }
-
         $res = $competitorsDB->post($form->getData());
         if ($competitorsDB->isError()) {
             return new JsonResponse([
