@@ -54,7 +54,7 @@ class Stages extends Entity
             $params
         );
     }
-    
+
     public function post($params)
     {
          $this->provider->executeQuery('update competitions.competitors set player1_id=:player1, player2_id=:player2  where id=:id', $params);
@@ -68,13 +68,6 @@ class Stages extends Entity
     public function freeCompetitors($params)
     {
         $competitors = $this->provider->fetchAll(
-            'select * from
-competitions.competitors competitors
-inner join competitions.stages stage on (stage.competition_id=competitors.competition_id)
-inner join stage_group.groups groups on(groups.stage_id=stage.id)
-left join stage_group.competitors stage_competitors on (stage_competitors.group_id=groups.id)
-where competitors.competition_id=9',
-
             'select * from competitions.stage_free_competitors(:stage_id)',
             $params
         );
