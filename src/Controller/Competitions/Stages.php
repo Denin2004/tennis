@@ -146,12 +146,13 @@ class Stages extends Common
         ]);
     }
 
-    public function editCompetitors(FormTransformer $transformer, $stage_id, $group_competitor_id)
+    public function editCompetitor(FormTransformer $transformer, $stage_id, $competitor_id)
     {
         $form = $this->createForm(
             EditCompetitor::class,
             [
-                'group_competitor_id' => $competitor_id
+                'competitor_id' => $competitor_id,
+                'stage_id' => $stage_id
             ],
             [
                 'stage_id' => $stage_id
@@ -160,6 +161,27 @@ class Stages extends Common
         return new JsonResponse([
             'success' => true,
             'form' => $transformer->transform($form->createView())
+        ]);
+    }
+
+    public function postCompetitor(Request $request, StagesEntity $stagesDB)
+    {
+        $formData = json_decode($request->getContent(), true);
+        if ($formData == null) {
+            return new JsonResponse([
+                'error' => 'common.errors.formData'
+            ]);
+        }
+        $form = $this->createForm(EditCompetitor::class);
+        $form->submit($formData);
+        if (!$form->isValid()) {
+            return new JsonResponse([
+                'error' => $this->formErrors($form)
+            ]);
+        }
+        $stagesDB->postCompetitor($form->getData());
+        return new JsonResponse([
+            'success' => true
         ]);
     }
 }

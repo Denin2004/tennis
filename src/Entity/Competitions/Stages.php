@@ -68,7 +68,7 @@ class Stages extends Entity
     public function freeCompetitors($params)
     {
         $competitors = $this->provider->fetchAll(
-            'select * from competitions.stage_free_competitors(:stage_id)',
+            'select * from competitions.stage_competitor_s_free(:stage_id)',
             $params
         );
         $res = [];
@@ -77,5 +77,13 @@ class Stages extends Entity
         }
         return $res;
 
+    }
+
+    public function postCompetitor($params)
+    {
+        $competitors = $this->provider->executeQuery(
+            'perform competitions.stage_competitor_post(:stage_id)',
+            $params
+        );
     }
 }

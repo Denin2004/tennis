@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
 
-import { Descriptions, message, Table, Button } from 'antd';
+import { Descriptions, message, Table, Button, Form } from 'antd';
 import { PlusOutlined } from '@ant-design/icons';
 
 import axios from 'axios';
@@ -18,6 +18,8 @@ class StageGroup extends Component {
         this.groups = this.groups.bind(this);
         this.groupCompetitor = this.groupCompetitor.bind(this);
         this.editCompetitor = this.editCompetitor.bind(this);
+        this.cancelEditCompetitor = this.cancelEditCompetitor.bind(this);
+        this.postCompetitor = this.postCompetitor.bind(this);
         this.state = {
             loading: true,
             editCompetitor: -1
@@ -57,27 +59,15 @@ class StageGroup extends Component {
     
     gameCompetitor(game, competitor) {
         return competitor == 1 ? this.groupCompetitor({
-            stageID: game.stage_id,
             player1: game.player11,
-            player2: game.player12,
-            gamesPlayed: game.competitor1_games_played,
-            competitorID: game.competitor1_id,
-            groupCompetitorID: game.group_competitor1_id
+            player2: game.player12
         }) : this.groupCompetitor({
-            stageID: game.stage_id,
             player1: game.player21,
-            player2: game.player22,
-            gamesPlayed: game.competitor2_games_played,
-            competitorID: game.competitor2_id,
-            groupCompetitorID: game.group_competitor2_id            
+            player2: game.player22
         });
     }
     
     groupCompetitor(competitor) {
-        if (competitor.gamesPlayed == 0) {
-            return <Button  type="link" onClick={() => {this.editCompetitor(competitor.stageID, competitor.groupCompetitorID)}}>{competitor.groupCompetitorID === null ? this.props.t('competition.competitor.vacancy') : 
-                    (this.props.twoPlayers ? competitor.player1+'/'+competitor.player2 : competitor.player1)}</Button>
-        }
         return this.props.twoPlayers ? competitor.player1+'/'+competitor.player2 : competitor.player1;
     }
     
@@ -86,8 +76,8 @@ class StageGroup extends Component {
             if (res.data.success) {
                 this.setState({
                     loading: false,
-                    editCompetitor: competitorID,
-                    
+                    editCompetitor: groupCompetitorID,
+                    form: res.data.form
                 });
             } else {
                 message.error(this.props.t(res.data.error));
@@ -95,17 +85,42 @@ class StageGroup extends Component {
         }).catch((error) => {
             message.error(error.toString());
         });
-        this.setState({
-            loading: true,
-            editCompetitor: -1
-        })
     }
     
-    gameScore(competitor_id, game) {
-        if ((game.player11_id === null)||(game.player21_id === null)) {
+    postCompetitor() {
+        this.props.form
+            .validateFields()
+            .then(values => {
+                axios({
+                    method: this.state.form.method,
+                    url: window.MFW_APP_PROPS.urls.competition.stage.postCompetitor,
+                    data: values,
+                    headers: {'Content-Type': 'application/json'}
+                }).then(res => {
+                    if (res.data.success) {
+                        this.setState({editCompetitor: -1});
+                    } else {
+                        message.error(this.props.t(res.data.error));
+                    }
+                }).catch(error => {
+                    message.error(error.toString());
+                });
+            })
+            .catch(info => {
+                message.error(this.props.t('common.errors.validate'));
+            });        
+    }
+    
+        cancelEditCompetitor() {
+        this.setState({editCompetitor: -1});
+    }
+
+    
+    gameScore(group_competitor_id, game) {
+        if ((game.player11 === null)||(game.player21 === null)) {
             return '';
         }
-        if (game.competitor1_id == competitor_id) {
+        if (game.group_competitor1_id == group_competitor_id) {
             return game.score1 + ' : ' + game.score2 + (game.tie1 != 0 || game.tie2 != 0 ?  game.tie1 + ' : ' + game.tie2 : '');
         }
         return game.score2 + ' : ' + game.score1 + (game.tie1 != 0 || game.tie2 != 0 ?  game.tie2 + ' : ' + game.tie1 : '');
@@ -121,30 +136,59 @@ class StageGroup extends Component {
                     games: {}
                 };
             }
-            if (res[game.group_id]['games'][game.competitor1_id] == undefined) {
-                res[game.group_id]['games'][game.competitor1_id] = {
+            if (res[game.group_id]['games'][game.group_competitor1_id] == undefined) {
+                res[game.group_id]['games'][game.group_competitor1_id] = {
                     name: stage.gameCompetitor(game, 1),
-                    score: game.competitor1_score
+                    score: game.competitor1_score,
+                    gamesPlayed: game.competitor1_games_played,
+                    stageID: game.stage_id,
+                    competitorID: game.competitor1_id
                 };
-                res[game.group_id]['games'][game.competitor1_id][game.competitor2_id] = {...game};
+                res[game.group_id]['games'][game.group_competitor1_id][game.group_competitor2_id] = {...game};
 
             } else {
-                res[game.group_id]['games'][game.competitor1_id][game.competitor2_id] = {...game}
+                res[game.group_id]['games'][game.group_competitor1_id][game.group_competitor2_id] = {...game}
             }
-            if (res[game.group_id]['games'][game.competitor2_id] == undefined) {
-                res[game.group_id]['games'][game.competitor2_id] = {
+            if (res[game.group_id]['games'][game.group_competitor2_id] == undefined) {
+                res[game.group_id]['games'][game.group_competitor2_id] = {
                     name: stage.gameCompetitor(game, 2),
-                    score: game.competitor2_score
+                    score: game.competitor2_score,
+                    gamesPlayed: game.competitor2_games_played,
+                    stageID: game.stage_id,
+                    competitorID: game.competitor2_id
                 };
-                res[game.group_id]['games'][game.competitor2_id][game.competitor1_id] = {...game};
+                res[game.group_id]['games'][game.group_competitor2_id][game.group_competitor1_id] = {...game};
             } else {
-                res[game.group_id]['games'][game.competitor2_id][game.competitor1_id] = {...game}
+                res[game.group_id]['games'][game.group_competitor2_id][game.group_competitor1_id] = {...game}
             }           
         });
         Object.keys(res).map(group => {
             res[group].columns = [{
                     title: '',
-                    dataIndex: 'name'
+                    dataIndex: 'name',
+                    render: (competitor, row) => {
+                        if (row.id == this.state.editCompetitor) {
+                            return <React.Fragment>
+                                <Form component={false} form={this.props.form}>
+                                    <MfwFormWidget element={this.state.form.elements.free_competitors}/>
+                                    <MfwFormWidget element={this.state.form.elements.stage_id}/>
+                                    <MfwFormWidget element={this.state.form.elements.competitor_id}/>
+                                    <MfwFormWidget element={this.state.form.elements._token}/>
+                                    <Button  type="link" onClick={this.postCompetitor}>{this.props.t('actions.post')}</Button>
+                                    <Button  type="link" onClick={this.cancelEditCompetitor}>{this.props.t('actions.cancel')}</Button>
+                                </Form>
+                            </React.Fragment>;
+                        }
+                        if (this.state.editCompetitor != -1) {
+                            return row.competitorID === null ? this.props.t('competition.competitor.vacancy') : 
+                               (competitor);
+                        }
+                        if (row.gamesPlayed == 0) {
+                            return <Button  type="link" onClick={() => {this.editCompetitor(row.stageID, row.id)}}>{row.competitorID === null ? this.props.t('competition.competitor.vacancy') : 
+                               (competitor)}</Button>
+                        }
+                        return competitor; 
+                    }
             }];
             res[group].data = [];
             var col = 1
@@ -161,7 +205,10 @@ class StageGroup extends Component {
                 var row = {
                     id: competitor1,
                     name: res[group].games[competitor1].name,
-                    score: res[group].games[competitor1].score
+                    score: res[group].games[competitor1].score,
+                    gamesPlayed: res[group].games[competitor1].gamesPlayed,
+                    stageID: res[group].games[competitor1].stageID,
+                    competitorID: res[group].games[competitor1].competitorID                    
                 };
                 row['competitor_'+competitor1] = '';
                 Object.keys(res[group].games[competitor1]).map(competitor2 => {

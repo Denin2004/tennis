@@ -26,7 +26,7 @@ class Main extends Entity
         $params['from'] = $params['period'][0];
         $params['to'] = $params['period'][1];
         if ($params['id'] == -1) {
-            return $this->provider->fetchAll('insert into competitions.competitions (court_id, type, "from", "to")
+            return $this->provider->fetchAll('insert into competitions.competitions(court_id, type, "from", "to")
                 values(:court_id, :type, to_timestamp(:from, :format),
                 to_timestamp(:to, :format)) returning id', $params)[0];
         } else {

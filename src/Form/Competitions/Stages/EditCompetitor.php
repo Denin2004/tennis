@@ -21,10 +21,10 @@ class EditCompetitor extends AbstractType
 
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        dump($options);
-        $builder->add('group_competitor_id', HiddenType::class)
+        $builder->add('competitor_id', HiddenType::class)
+            ->add('stage_id', HiddenType::class)
             ->add(
-                'competitor_id',
+                'free_competitors',
                 ChoiceType::class,
                 [
                     'choices' => $this->stages->freeCompetitors(['stage_id' => $options['stage_id']]),
@@ -33,7 +33,6 @@ class EditCompetitor extends AbstractType
                     'data' => 'group'
                 ]
             );
-        $this->stages->buildForm($builder, $options, 'all');
     }
 
     public function configureOptions(OptionsResolver $resolver)

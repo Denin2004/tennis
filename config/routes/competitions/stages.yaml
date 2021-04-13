@@ -63,11 +63,17 @@ stageGames:
         id: -1
 
 stageEditCompetitor:
-    path: /freecompetitord/{stage_id}/{group_competitor_id}
+    path: /competitor/edit/{stage_id}/{competitor_id}
     controller: App\Controller\Competitions\Stages::editCompetitor
     requirements:
         stage_id: \d+|-1
         group_competitor_id: \d+|-1
     defaults:
         stage_id: -1
-        group_competitor_id: \d+|-1
+        competitor_id: \d+|-1
+    methods: GET
+        
+stagePostCompetitor:
+    path: /competitor/post/
+    controller: App\Controller\Competitions\Stages::postCompetitor
+    methods: POST
