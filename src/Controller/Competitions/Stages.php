@@ -172,7 +172,7 @@ class Stages extends Common
                 'error' => 'common.errors.formData'
             ]);
         }
-        $form = $this->createForm(EditCompetitor::class);
+        $form = $this->createForm(EditCompetitor::class, [], ['request' => true]);
         $form->submit($formData);
         if (!$form->isValid()) {
             return new JsonResponse([

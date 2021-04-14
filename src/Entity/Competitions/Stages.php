@@ -81,8 +81,8 @@ class Stages extends Entity
 
     public function postCompetitor($params)
     {
-        $competitors = $this->provider->executeQuery(
-            'perform competitions.stage_competitor_post(:stage_id)',
+        $this->provider->executeQuery(
+            'select * from competitions.stage_competitor_post(:stage_id, :competitor_id, :free_competitors)',
             $params
         );
     }

@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
 
-import { Descriptions, message, Table, Button, Form } from 'antd';
+import { Descriptions, message, Table, Button, Form, Row, Col } from 'antd';
 import { PlusOutlined } from '@ant-design/icons';
 
 import axios from 'axios';
@@ -29,10 +29,11 @@ class StageGroup extends Component {
     componentDidMount() {
         axios.get(window.MFW_APP_PROPS.urls.competition.stage.view+'/'+this.props.id).then(res => {
             if (res.data.success) {
+                var config = JSON.parse(res.data.view.data);
                 this.setState({
                     loading: false,
-                    config: JSON.parse(res.data.view.data),
-                    groups: this.groups(res.data.games)
+                    config: config,
+                    groups: this.groups({ games: res.data.games, players: config.players})
                 });
             } else {
                 message.error(this.props.t(res.data.error));
@@ -126,10 +127,11 @@ class StageGroup extends Component {
         return game.score2 + ' : ' + game.score1 + (game.tie1 != 0 || game.tie2 != 0 ?  game.tie2 + ' : ' + game.tie1 : '');
     }
     
-    groups(games) {
-        var res = {};
+    groups(data) {
+        var res = {},
+            width = 70/(data.players*1+1)+'%';
         const stage = this;
-        games.map(function (game){
+        data.games.map(function (game){
             if (res[game.group_id] == undefined) {
                 res[game.group_id] = {
                     name: '',
@@ -164,31 +166,37 @@ class StageGroup extends Component {
         });
         Object.keys(res).map(group => {
             res[group].columns = [{
-                    title: '',
-                    dataIndex: 'name',
-                    render: (competitor, row) => {
-                        if (row.id == this.state.editCompetitor) {
-                            return <React.Fragment>
-                                <Form component={false} form={this.props.form}>
-                                    <MfwFormWidget element={this.state.form.elements.free_competitors}/>
-                                    <MfwFormWidget element={this.state.form.elements.stage_id}/>
-                                    <MfwFormWidget element={this.state.form.elements.competitor_id}/>
-                                    <MfwFormWidget element={this.state.form.elements._token}/>
-                                    <Button  type="link" onClick={this.postCompetitor}>{this.props.t('actions.post')}</Button>
-                                    <Button  type="link" onClick={this.cancelEditCompetitor}>{this.props.t('actions.cancel')}</Button>
-                                </Form>
-                            </React.Fragment>;
-                        }
-                        if (this.state.editCompetitor != -1) {
-                            return row.competitorID === null ? this.props.t('competition.competitor.vacancy') : 
-                               (competitor);
-                        }
-                        if (row.gamesPlayed == 0) {
-                            return <Button  type="link" onClick={() => {this.editCompetitor(row.stageID, row.id)}}>{row.competitorID === null ? this.props.t('competition.competitor.vacancy') : 
-                               (competitor)}</Button>
-                        }
-                        return competitor; 
+                title: '',
+                dataIndex: 'name',
+                render: (competitor, row) => {
+                    if (row.id == this.state.editCompetitor) {
+                        return <React.Fragment>
+                            <Form component={false} form={this.props.form}>
+                                <Row wrap={false}>
+                                    <Col flex="auto">
+                                        <MfwFormWidget element={this.state.form.elements.free_competitors}/>
+                                    </Col>
+                                    <Col flex="none">
+                                        <Button  type="link" onClick={this.postCompetitor}>{this.props.t('actions.post')}</Button>
+                                        <Button  type="link" onClick={this.cancelEditCompetitor}>{this.props.t('actions.cancel')}</Button>
+                                    </Col>
+                                </Row>
+                                <MfwFormWidget element={this.state.form.elements.stage_id}/>
+                                <MfwFormWidget element={this.state.form.elements.competitor_id}/>
+                                <MfwFormWidget element={this.state.form.elements._token}/>
+                            </Form>
+                        </React.Fragment>;
                     }
+                    if (this.state.editCompetitor != -1) {
+                        return row.competitorID === null ? this.props.t('competition.competitor.vacancy') : 
+                           (competitor);
+                    }
+                    if (row.gamesPlayed == 0) {
+                        return <Button  type="link" onClick={() => {this.editCompetitor(row.stageID, row.id)}}>{row.competitorID === null ? this.props.t('competition.competitor.vacancy') : 
+                           (competitor)}</Button>
+                    }
+                    return competitor; 
+                }
             }];
             res[group].data = [];
             var col = 1
@@ -197,6 +205,7 @@ class StageGroup extends Component {
                     title: col,
                     dataIndex: 'competitor_'+competitor1,
                     align: 'center',
+                    width: width,
                     render: (game, row) => {
                         return row.id == competitor1 ? {props: {style: {background: 'black'}}, children: ''} : stage.gameScore(row.id/1, game);
                     }
@@ -220,7 +229,9 @@ class StageGroup extends Component {
             });
             res[group].columns.push({
                 title: this.props.t('competition.competitor.score'),
-                dataIndex: 'score'
+                dataIndex: 'score',
+                width: width,
+                align: 'center'
             });            
             delete res[group].games;
         });
